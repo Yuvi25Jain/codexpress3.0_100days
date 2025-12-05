@@ -1,0 +1,82 @@
+question : sort the array, by placing zero at the end with constant space
+
+
+Approach 1 : two pointer  , i and pos . tc : o(n) , sc : o(1)
+  ------------------------------------------------------------------------
+  
+Approach 2 : for outplace ,here given in place , create new array with all non zero and then append zeroes
+
+  void stablePartition(vector<int>& arr) {
+    int n = arr.size();
+    vector<int> temp;
+
+    // Step 1: Copy all non-zero elements
+    for (int i = 0; i < n; i++) {
+        if (arr[i] != 0) {
+            temp.push_back(arr[i]);
+        }
+    }
+
+    // Step 2: Append zeros to the end
+    int zeroCount = n - temp.size();
+    for (int i = 0; i < zeroCount; i++) {
+        temp.push_back(0);
+    }
+
+    // Step 3: Copy back to original array
+    for (int i = 0; i < n; i++) {
+        arr[i] = temp[i];
+    }
+}
+
+----------------------------------------------------------------------------------
+Approach 3 : swap . 
+
+  void swapApproach(vector<int>& arr) {
+    int n = arr.size();
+    int pos = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (arr[i] != 0) {
+            if (i != pos) {
+                swap(arr[i], arr[pos]);
+            }
+            pos++;
+        }
+    }
+}
+
+
+-----------------------------------------------------
+int main() { 
+    int n;
+    cin >> n;                        
+
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];              
+    }
+
+    int pos = 0;                     
+
+    
+    for (int i = 0; i < n; i++) {
+        if (arr[i] != 0) {
+            arr[pos] = arr[i];
+            pos++;
+        }
+    }
+
+    
+    while (pos < n) {
+        arr[pos] = 0;
+        pos++;
+    }
+
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
