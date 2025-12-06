@@ -1,0 +1,60 @@
+Question : Kadane Algorithm ,find the maximum sum of subarray comprise of -ve , +ve and 0 as element.
+
+Constraint hint:
+i. -10^4 <= A[i] <= 10^4 : element can be -ve , +ve and 0 . dynamic decision making (extend or restart). include or exclude negatives.
+
+think of range. think negative elements , hint to restart vs continue logic
+
+ii.  1 <= N <= 10^5 : array is very large(100000) element .  look for linear time algo.
+
+
+brute force : o(n2)
+
+generate all subarray. ompute the sum of each , keep track of max sum encountered.
+
+  int maxsubarr_bruteforce(vector<int> &a) {
+    int n = a.size();
+    int bestSum = INT_MIN;
+
+    for (int i = 0; i < n; i++) {
+        int currentSum = 0;
+        for (int j = i; j < n; j++) {
+            currentSum += a[j]; // accumulate sum
+            bestSum = max(bestSum, currentSum);
+        }
+    }
+    return bestSum;
+}
+
+----------------------
+
+optimal approach : o(n) kadane.
+
+  use two variable , currentSum give the current sum ... if the current sum is negative , addding element to it make the thing worse so we should restart.
+
+    other is best sum which will keep the track of all the previous currentSums.
+
+
+    int maxsubarr(vector<int> &a){
+    int n = a.size();
+    int currSum = a[0];
+    int bestSum = a[0];
+    for(int i = 1 ; i < n ; i++){
+        currSum = max(a[i] , currSum + a[i]);
+        bestSum = max(bestSum , currSum);
+    }
+    return bestSum ;
+}
+
+int main() {
+    int n ;
+    cin>>n;
+    vector<int> a(n);
+    for(int i = 0 ; i < n ; i++){
+        cin>>a[i];
+    }
+    cout<<maxsubarr(a)<<endl;
+    return 0;
+}
+
+  
