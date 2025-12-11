@@ -1,0 +1,69 @@
+/*Mountain peak... means its neighbour element is strcitly smaller than its
+
+brute force... compare a[i] current element with its neighbor a[i-1] and a[i+1].. increase cnt 
+if it is. tc: o(n) and o(1)
+
+
+here we don't optimsed it further because ... each element need to travserse once
+
+just writing cleaner version of it
+
+edge case : start and end element don;t have peak , if element contain
+2 elements i.e n<3 then it will have no loop and return 0 , flat array : plateau
+contain same elements [2,2,2,2] , strictly increasing or decreasing array*
+strictly increasing or decreasing peak no peak
+multiple peaks
+negative no . 
+
+*/
+
+int peakelement_brute(vector<int> &a){
+    int n = a.size();
+    int cnt = 0 ;
+    if (n < 3) return 0;   // early exit optmised
+    
+    // start and end don't have peak 
+    for(int i = 1 ; i<n-1 ; i++){
+        if(a[i-1] < a[i]  && a[i+1] < a[i]){
+            cnt++;
+        }
+    }
+    return cnt;
+}
+
+
+// to print peak elements tooo
+vector<int> print_peakelement_brute(const vector<int> &a) {
+    int n = a.size();
+    vector<int> peaks;
+
+    // check only from 1 to n-2 (since first and last can't be peaks)
+    for (int i = 1; i < n - 1; i++) {
+        if (a[i] > a[i - 1] && a[i] > a[i + 1]) {
+            peaks.push_back(a[i]);
+        }
+    }
+    return peaks;
+}
+
+int main()
+{
+   vector<int>a = {1, 3, 2, 4, 1};
+   int ans1 = peakelement_brute(a);
+   cout<<ans1;
+   cout<<endl;
+   vector<int> ans = print_peakelement_brute(a);
+
+    // print all peaks
+    if (ans.empty()) {
+        cout << "No peaks found\n";
+    } else {
+        cout << "Peaks: ";
+        for (int val : ans) {
+            cout << val << " ";
+        }
+        cout << "\n";
+    }
+
+    return 0;
+}
