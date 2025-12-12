@@ -1,0 +1,82 @@
+/*Maximum profit in fixed size of window (static sliding window)
+
+brute force : generate all the subarray and then computer sum and comapre*/
+
+int profit_optimal(vector<int> &a , int k){
+    int n = a.size();
+    int cs = 0; 
+    int max_sum = 0;
+
+    // Step 1: sum of first k elements only
+    for(int i = 0; i < k; i++) {
+        cs += a[i];
+    }
+    max_sum = cs;
+
+    // Step 2: slide the window
+    for(int i = k; i < n; i++) {
+        
+        //a[i] is enter element and a[i-k] leaving element
+        cs += a[i] - a[i-k];
+        max_sum = max(max_sum, cs);
+    }
+
+    return max_sum;
+}
+
+/*int brute(vector<int>& a, int k) {
+    int n = a.size();
+    int max_sum = INT_MIN;
+    
+    
+    //generating all the possible candisdate not all windows
+    
+    
+    for(int i = 0; i <= n-k; i++) {
+        int cs = 0;
+        for(int j = i; j < i+k; j++) {
+            cs += a[j];
+        }
+        max_sum = max(max_sum, cs);
+    }
+    return max_sum;
+}
+*/
+
+int main()
+{
+    vector<int> a = {1,3, -1,-3,5,3,6,7};
+    int ans = profit_brute(a,3);
+    cout<<ans;
+
+
+
+
+  -----------------------
+
+
+
+    main function for hackerank
+
+
+
+    int main() {  
+    
+     vector<int> arr;
+    int x;
+
+    // read until newline (array elements)
+    string line;
+    getline(cin, line);
+    stringstream ss(line);
+    while (ss >> x) arr.push_back(x);
+
+    int k;
+    cin >> k;  // read window size
+
+    cout << profit_optimal(arr, k) << "\n";
+    return 0;
+}
+
+    return 0;
+}
