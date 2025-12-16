@@ -1,0 +1,64 @@
+String manipulation: if anagram then craftable else insufficient
+
+brute force : sort both string ... and then compare its count . sorting takes o(nlogn)
+optimal : either increase or decrease the count of s string or the remaining with r. if we increasee
+ement s then decrement count for r
+
+complexcity o(n) i.e constant time  , space complexcity o(26)*/
+Edge case
+✅ Length mismatch → handled.
+
+✅ Empty strings → handled.
+
+✅ All same characters → handled.
+
+✅ Completely different characters → handled.
+
+✅ Large inputs → handled.
+
+⚠️ Non‑lowercase or invalid chars → need sanitization.
+  
+string anagram_brute(string s , string r){
+    if(s.size() != r.size()){
+        return "insufficient";
+    }
+    sort(s.begin(), s.end());
+    sort(r.begin(), r.end());
+    return (s==r)? "craftable": "insufficient";
+}
+
+string anagram_optimal(string S, string R){
+    if(S.size() != R.size()){
+        return "insufficient";
+    }
+    vector<int> freq(26,0);
+    for(char c : S){
+        if (c >= 'a' && c <= 'z') { // to handle edge if string have null character
+
+        freq[c-'a']++;
+        }
+    }
+    for(char c : R){
+        if (c >= 'a' && c <= 'z') {
+
+        freq[c-'a']--;
+        }
+    }
+    for(int count : freq){
+        if(count != 0){
+            return "Insufficient";
+        }
+    }
+    return "Craftable";
+}
+
+int main()
+{
+    string s , r;
+    cin>>s>>r;
+    cout<<anagram_brute(s,r);
+    cout<<endl;
+    cout<<"Optimal solution"<<endl;
+    cout<<anagram_optimal(s,r);
+    return 0;
+}
