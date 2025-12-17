@@ -1,0 +1,47 @@
+/*Longest continuous substring  with no repeatation
+
+
+brute force : generate all the substrings , for each substring check 
+if all characters are unique , track the maximum length : o(n2)*/
+
+int brute_longsub(string s){
+    int n = s.size(), maxLen = 0;
+    
+    for(int i = 0; i < n; i++){
+        unordered_set<char> seen;
+        for(int j = i; j < n; j++){
+            if(seen.count(s[j])) {
+                break; // stop when repeat found
+            }
+            seen.insert(s[j]); // add new char
+            maxLen = max(maxLen, j - i + 1); // update length
+        }
+    }
+    return maxLen;
+}
+
+int optimal_longest(string s){
+    vector<int> lastIndex(256,-1);
+    int maxlen = 0 , start = 0 ;
+    for(int i = 0 ; i < s.size() ; i++){
+        if(lastIndex[s[i]] >= start){
+            start = lastIndex[s[i]] + 1 ;
+        }
+        lastIndex[s[i]] = i ;
+        maxlen = max(maxlen , i-start+1);
+        
+    }
+    return maxlen;
+    
+}
+
+
+int main()
+{
+    string s;
+    cin>>s;
+    cout<<brute_longsub(s)<<endl;
+    cout<<optimal_longest(s);
+
+    return 0;
+}
