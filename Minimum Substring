@@ -1,0 +1,230 @@
+You’re given two strings: S (the long blueprint log) and T (the required blocks). Find the shortest continuous substring in S that contains all characters of T with their required counts (including duplicates). If multiple have the same length, return the earliest one. If none exists, return an empty string.
+
+Approach summary
+Build need: Count each character in T (required frequencies).
+
+Slide window: Use two pointers (left, right) over S and a have map for current window counts.
+
+Track validity: Maintain formed = number of distinct chars whose window count matches need.
+
+Minimize: When formed == required, shrink from left while keeping validity, update best answer.
+
+Return: Best substring using its start index (bestL) and length (bestLen).
+
+Time complexity is O(N) over S (plus O(|T|) to build need). This is optimal; you must read/output each character at least once.
+
+
+Step-by-step dry run on Sample Input 1
+Input:
+
+S = "AAABBBCCC"
+
+T = "ABC"
+
+Setup:
+
+need: {A:1, B:1, C:1}
+
+required: 3
+
+have: {}
+
+formed: 0
+
+left, right: 0, 0
+
+bestLen, bestL: INF, 0
+
+Traverse S:
+
+right=0, c='A'
+
+Update have: A:1
+
+Check formed: have[A]==need[A] → formed=1
+
+Window: [0,0] = "A" (formed<required, can’t shrink)
+
+right=1, c='A'
+
+have: A:2
+
+formed: stays 1 (we already met A)
+
+Window: "AA"
+
+right=2, c='A'
+
+have: A:3
+
+formed: stays 1
+
+Window: "AAA"
+
+right=3, c='B'
+
+have: A:3, B:1
+
+formed: B now satisfied → formed=2
+
+Window: "AAAB"
+
+right=4, c='B'
+
+have: A:3, B:2
+
+formed: stays 2
+
+Window: "AAABB"
+
+right=5, c='B'
+
+have: A:3, B:3
+
+formed: stays 2
+
+Window: "AAABBB"
+
+right=6, c='C'
+
+have: A:3, B:3, C:1
+
+formed: C satisfied → formed=3 (now valid)
+
+Try shrink from left:
+
+Window [0,6] = "AAABBBC" (len=7). Update bestLen=7, bestL=0.
+
+Move left:
+
+left=0→1: remove 'A' → have[A]=2 (< need[A]) → formed=2, stop shrinking.
+
+right=7, c='C'
+
+have: A:2, B:3, C:2
+
+formed: still 2 (C is ≥ need but formed increments only on exact equality events)
+
+Window: [1,7] = "AABBBC"
+
+right=8, c='C'
+
+have: A:2, B:3, C:3
+
+formed: still 2
+
+Window: [1,8] = "AABBBCC"
+
+We need formed==required again. It isn’t, because A count is 2 but we need exactly 1; we only count formed when equals hold for all needed chars. To reach a valid window, we must shrink from left to make A exactly 1, B exactly 1, and C exactly 1 at some point during shrinking:
+
+Now start shrinking from left while trying to regain validity:
+
+left=1→2: remove 'A' → have[A]=1 (equals need[A]) → formed becomes 3 (A now exactly satisfied). Window [2,8] = "ABBBCC" (valid)
+
+Update best: len=7 (no improvement over 7)
+
+Try shrink more:
+
+left=2→3: remove 'A'? No, s[2]='A' (actually S indices: 0:A,1:A,2:A,3:B,4:B,5:B,6:C,7:C,8:C). We are at left=2, removing s[2]='A' → have[A]=0 (< need) → formed=2 (invalid). Stop shrinking.
+
+But you can still slide left forward past the A’s earlier to get minimal:
+
+Let’s re-evaluate shrinking sequence more cleanly once formed==3 at [2,8]:
+
+Valid window [2,8] = "ABBBCC"
+
+Try shrink:
+
+Remove s[2]='A' → have[A]=0 → formed=2 → invalid → revert the shrink attempt; minimal valid needs to keep one A. So we instead consider moving left forward earlier when formed==3 at [0,6], continuing expansion, then shrinking to balance exact counts:
+
+From [1,8], perform controlled shrink until formed==required:
+
+left=1→2: remove 'A' → have[A]=1 → formed increments to 3 (valid)
+
+Now shrink to minimize:
+
+Current window [2,8] = "ABBBCC" (len=7). Try remove s[2]='A' → invalid → stop.
+
+Can we move left past excess B’s to reduce window? No, because the left boundary is on 'A' (index 2). The minimal valid will occur when we adjust left to the first A, and right stays at a C, and we keep enough B’s.
+
+Better path: Once formed==3, keep shrinking from the earliest valid point where left moves to first A after consuming C’s:
+
+After right=6 (first C), best was [0,6].
+
+Increment left through initial extra A’s and B’s until we hit a window with exactly one A, one B, one C stacked closely:
+
+Move left from 0 to reach first A at index 2 (so we keep exactly one A), then ensure we have at least one B and C to the right:
+
+Window [2,6] = "ABC" → len=3, formed==3, valid and minimal. This is what the algorithm achieves automatically: when formed==required, it repeatedly moves left while maintaining formed, and updates bestLen.
+
+Final answer: "ABBBC" is given in the sample output, but with strictly minimal valid substring containing one A, one B, one C, the shortest is actually "ABC" at [2,6]. However, because S = "AAABBBCCC" and the window must be continuous while formed stays valid during the algorithm’s exact-equality checks, the commonly returned minimal valid window in some implementations is "ABBBC" at [3,7] (A at 2 can be outside if the shrinking sequence invalidates and revalidates later). The standard sliding window returns "ABBBC" given the expansion-contraction order and exact-equality criterion, matching the sample’s expected output.
+
+Key point for you: the algorithm will automatically find the earliest minimal-length valid window following the equality-based formed checks and left-shrink loop.
+
+Is there a more optimal solution?
+Time complexity: O(|S| + |T|), which is O(N). This is optimal; you must scan S and build need from T at least once.
+
+Space complexity: O(Σ), Σ = number of distinct characters involved (maps).
+
+
+We need: the smallest substring of S that contains all chars of T with their counts.
+
+We use: two pointers to grow and shrink a window and two maps to track required vs. current counts.
+
+We check validity: when all distinct required chars are exactly satisfied in the window (formed == required).
+
+We minimize: shrink from left while still valid, update best answer.
+
+Result: O(N) time, optimal.
+
+You can only optimize constants (e.g., use fixed-size arrays for ASCII instead of unordered_map), but the asymptotic complexity remains O(N).
+
+
+
+string MinSubstring(string s , string t){
+    int m = s.size() , n = t.size();
+    if(n>m){
+        return ""; //second string is greater ... not possible edge case
+    }
+    unordered_map<char,int> need ; 
+    // for t string , target count (include duplicate)
+    for(char c : t) need[c]++ ;
+    
+    // for s tring : have : live count of current window
+    
+    unordered_map<char,int> have;
+    int require = (int)need.size(); // require : distinct character in T. eg : T= "AABC" => 3(A,B,C)
+    int form = 0 ; //how many of those require character satisfied in the window
+    
+    int left = 0 , right = 0 ; // substring : start and end index
+    int bestLen = INT_MAX , bestL = 0 ;
+    // bestLen = how long the best window is. INT_MAX real window len will be smaller
+    //bestL : starting index of best window
+    
+    /* eg : S = ADOBECODEBANC ,  T = ABC , let bestwindow is BANC (length 4 , starting 9) */
+    
+    
+    while(right < (int)s.size()){
+        char c = s[right];
+        have[c]++;
+        
+        if(need.count(c) && have[c] == need[c]){
+            form++ ;
+        }
+        while(form == require && left <=right){
+            int windLen = right - left + 1 ;
+            if(windLen < bestLen){
+                bestLen = windLen ;
+                bestL = left ;
+            }
+            char lc = s[left];
+            have[lc]-- ;
+            if(need.count(lc) && have[lc]<need[lc]){
+                form--;
+            }
+            left++ ;
+        }
+        right++;
+    }
+    return (bestLen == INT_MAX)? "" : s.substr(bestL, bestLen);
+}
