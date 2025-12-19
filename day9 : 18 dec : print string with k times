@@ -1,0 +1,56 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+/*ques : print string with k times , brute force = optimal = o(n) 3[a]b[2] => aaabb*/
+
+string multistring(string s){
+    // 2 stack , no stack and string stack
+    stack<int> cntst ; //countstack
+    stack<string> stst ; //string stacks
+    string current = "";
+    int k = 0 ;
+    
+    for(char c : s){
+        
+        // 4 case : we encounter number , string , [ , ]
+        // handle num : make the full no , here it is in string so convert it into char into number
+        if(isdigit(c)){
+            k = k*10 + (c- '0');
+        }
+        else if(c == '['){ // [
+            cntst.push(k);
+            stst.push(current);
+            k = 0 ; //reset
+            current = "";
+        }
+        else if(c == ']'){
+            int repeatime = cntst.top();
+            cntst.pop();
+            string prev = stst.top();
+            stst.pop();
+            string repeat = "";
+for(int i = 0 ; i < repeatime ; i++){
+    repeat += current;   // repeat current string
+}
+current = prev + repeat; // attach to previous string
+
+        }
+        else{
+            //normal char : concatenate
+            current+=c;
+        }
+        
+    }
+    return current;
+    
+}
+
+int main()
+{
+   string s ;
+   cin>>s;
+   cout<<multistring(s);
+   
+
+    return 0;
+}
