@@ -1,0 +1,89 @@
+#include<numeric> // to use inbuilt lcm and gcd( greatest common divisor)
+using namespace std ;
+
+/*LCM of 3 numbers , compare with the k 
+
+LCM(X,Y,Z) = LCM(LCM(X,Y),Z)
+
+L.C.M (X,Y) = X*Y / GCD(X,Y)
+
+LCM : SMALLEST NUMBER DIVISIBLE BY ALL THREE
+
+GCD(X,Y) = GCD(Y , X%Y)
+to compute GCD quickly
+We use the Euclidean Algorithm:
+
+GCD(a, b) = GCD(b, a % b)
+
+Repeat until remainder = 0.
+
+Example: GCD(48, 18)
+
+48 % 18 = 12 → GCD(18, 12)
+
+18 % 12 = 6 → GCD(12, 6)
+
+12 % 6 = 0 → GCD = 6
+
+i/p : X, Y , Z integer , and k , if lCM(X,Y,Z) < k => print crash else safe*/
+
+
+
+long long bruteLCM(long long x , long long y , long long z){
+    long long start = max(x, max(y,z)); // note : we can't give 3 argu in maz it will take only two argument
+    /*alternatively it can also be written as ... notice {} in the parethesis
+    max({x,y,z}) to compare more than two values directly*/
+    
+    for(long long n = start ; ; n++){
+        // keep checking for value of n until the following if is true
+        if(n%x == 0 && n%y == 0 && n%z == 0){
+            return n ; // first common multiple
+        }
+    }
+    
+}
+
+// optimal : early exit 
+
+long long gcd(long long a, long long b) { //GCD(A,B) = GCD(B, A%B)
+    while (b != 0) {
+        long long temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+long long optimal_lcm(long long x, long long y , long long k){
+    long long g = gcd(x,y);
+    long long t = x/g;
+    __int128 prod = (__int128)t * (__int128)y;
+    if(prod >= k){
+        return k ; 
+    }
+    return (long long)prod ;
+}
+
+int main()
+{
+   long long X, Y, Z, K;
+    cin >> X >> Y >> Z >> K;
+
+    long long lcm = bruteLCM(X, Y, Z);
+
+    if (lcm < K) cout << "Crash\n";
+    else cout << "Safe\n";
+    
+    cout<<"Optimal solution: "<<endl;
+    long long lcmXY = optimal_lcm(X,Y,K);
+    long long lcmXYZ = optimal_lcm(lcmXY , Z ,K);
+    
+    if(lcmXYZ < K){
+        cout<<"crash"<<endl;
+    }
+    else{
+        cout<<"Safe"<<endl;
+    }
+
+    return 0;
+}
