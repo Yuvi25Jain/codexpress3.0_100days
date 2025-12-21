@@ -1,0 +1,104 @@
+/*ques : P find its prime divisors , divide P by that prime divors , choose divisor that gives largest reduction (i.e. smallest quotient
+*/
+
+/*Example 1: N = 12
+Prime divisors of 12: 2, 3
+
+Divide by 2 → 12/2 = 6
+
+Divide by 3 → 12/3 = 4
+
+Which is smaller? 4 → that’s the maximum reduction.
+
+Sequence: 12 → 4 → 2 → 1
+
+Haggle cost = 12 + 4 + 2 + 1 = 19 ✅*/
+
+
+
+/*Brute force : at each step find all the prime divisior of that no , 
+                divide by the one that gives smallest result
+                keep adding to the sum until we reach 19
+                
+                simple but slow : o(root n)
+*/
+//brute force
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// ---------- Brute Force Helpers ----------
+bool isPrime(int n) {
+    if (n < 2) return false;
+    for (int i = 2; i * i <= n; i++) {
+        if (n % i == 0) return false;
+    }
+    return true;
+}
+
+// Find smallest prime factor by trial division
+int largestPrimeFactor(int n) {
+    int lpf = 1;
+    for (int i = 2; i * i <= n; i++) {
+        while (n % i == 0) {
+            lpf = i;
+            n /= i;
+        }
+    }
+    if (n > 1) lpf = n; // if n itself is prime
+    return lpf;
+}
+
+long long haggleCostBrute(int N) {
+    long long cost = 0;
+    while (N > 1) {
+        cost += N;
+        int lpf = largestPrimeFactor(N);
+        N /= lpf;
+    }
+    cost += 1;
+    return cost;
+}
+
+// ---------- Optimal Helpers ----------
+
+
+// Precompute smallest prime factor for every number
+const int MAXN = 1000000;
+vector<int> lpf(MAXN+1);
+
+void sieve() {
+    for (int i = 2; i <= MAXN; i++) {
+        if (lpf[i] == 0) { // i is prime
+            for (int j = i; j <= MAXN; j += i) {
+                lpf[j] = i; // overwrite with largest prime factor
+            }
+        }
+    }
+}
+
+long long haggleCostOptimal(int N) {
+    long long cost = 0;
+    while (N > 1) {
+        cost += N;
+        int factor = lpf[N]; // largest prime factor
+        N /= factor;
+    }
+    cost += 1;
+    return cost;
+}
+
+// ---------- Main ----------
+int main() {
+    sieve(); // prepare SPF for optimal solution
+
+    int N;
+    cin >> N;
+
+    cout << "Brute Force Haggle Cost: " << haggleCostBrute(N) << "\n";
+    cout << "Optimal Haggle Cost: " << haggleCostOptimal(N) << "\n";
+
+    return 0;
+}
