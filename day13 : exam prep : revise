@@ -1,0 +1,60 @@
+Steve have collected N experience orbs and want to store them in K identical glass bottles.
+
+Each bottle may hold any number of orbs (including zero).
+
+However, due to a magical imbalance, all bottles must end up in the same enchantment state, defined by how their orb count behaves under a certain magical divisor M.
+
+Steve want to use as many orbs as possible while satisfying this condition.
+
+Any unused orbs must be discarded.
+
+Determine the minimum number of orbs that must be discarded.
+
+Input Format
+
+Three integers N (Total Orbs), K (Bottles), M (Divisor).
+
+Constraints
+
+1 <= N, K, M <= 10^9
+
+K can be greater than N.
+
+Output Format
+
+The minimum number of discarded orbs.
+
+Sample Input 0
+
+7 3 2
+Sample Output 0
+
+0
+Explanation 0
+
+It is possible to distribute all orbs while keeping all bottles in the same enchantment state, so no orbs need to be discarded.
+
+Sample Input 1
+
+5 2 2
+Sample Output 1
+
+1
+Explanation 1
+
+
+
+  #include <bits/stdc++.h>
+using namespace std;
+
+
+int main() { 
+    
+    long long N , K , M ; cin >> N >> K >> M ; // step 1 : find gcd of K and M 
+    long long g = __gcd(K , M) ; 
+    // step 2 : maximum usable orbs must be multiple of g 
+    long long usable = N - (N % g) ; // step 3 : discarded orbs
+    long long discarded = N - usable ; cout << discarded << endl ; 
+    return 0 ; }
+
+It is not possible to distribute all experience orbs among the bottles while keeping them in the same enchantment state. At least one orb must be discarded to satisfy the condition.
