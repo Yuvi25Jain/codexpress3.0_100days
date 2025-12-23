@@ -1,0 +1,327 @@
+Kai is trapped on the Nether ceiling and can move only by using Ender Pearls.
+
+He has access to two types of pearls, available in unlimited quantity:
+
+Weak Pearl: Teleports Kai exactly A blocks forward ( + A on the X-axis).
+Strong Pearl: Teleports Kai exactly B blocks backward ( − B on the X-axis).
+Kai starts at X = 0 and wants to reach exactly X = T.
+
+Determine whether it is possible for Kai to reach the target position using any sequence of these two pearls.
+
+Input Format
+
+Three integers A, B, T.
+
+Constraints
+
+1 <= A, B, T <= 10^9
+
+Time Complexity: O(log(min(A,B)))
+
+Output Format
+
+Print "Yes" if possible, "No" otherwise.
+
+Sample Input 0
+
+2 4 5
+Sample Output 0
+
+No
+Explanation 0
+
+Starting from position 0, Kai can only move forward by 2 blocks or backward by 4 blocks.
+
+No matter how these moves are combined, it is not possible to land exactly on position 5.
+
+Hence, reaching the target position is not possible.
+
+Sample Input 1
+
+3 5 1
+Sample Output 1
+
+Yes
+Explanation 1
+
+By carefully combining forward and backward teleportations, Kai can reach position 1 starting.
+  from 0.
+  ----------------------------
+
+
+  Reach target with two teleports
+Imagine Kai on a straight line at position 0. He has two magic buttons:
+
+Weak Pearl: jumps forward by exactly A blocks.
+
+Strong Pearl: jumps backward by exactly B blocks.
+
+Question: Can Kai land exactly on position T using these two buttons any number of times?
+
+Kid-friendly intuition
+Think of A and B as two Lego brick sizes you can add and remove. You can stack A-bricks to go forward, and take away B-bricks to go backward. After many tries, the only positions you can land on are those that match the “pattern” shared by both A and B.
+
+That shared pattern is called the greatest common divisor: 
+gcd
+⁡
+(
+𝐴
+,
+𝐵
+)
+. If the target 
+𝑇
+ fits this pattern (meaning 
+𝑇
+ is a multiple of 
+gcd
+⁡
+(
+𝐴
+,
+𝐵
+)
+), then it’s possible. If it doesn’t, no amount of forward/backward hops will land you there.
+
+How to think from scratch
+List reachable positions idea (tiny numbers):
+
+Observation: Every move changes your position by either 
++
+𝐴
+ or 
+−
+𝐵
+.
+
+Pattern: After any sequence, your position looks like:
+
+position
+=
+𝑥
+⋅
+𝐴
+−
+𝑦
+⋅
+𝐵
+where 
+𝑥
+,
+𝑦
+ are non-negative integers (how many forward/backward hops).
+
+Spot the hidden rule:  
+Any number of the form 
+𝑥
+𝐴
+−
+𝑦
+𝐵
+ is always a multiple of 
+gcd
+⁡
+(
+𝐴
+,
+𝐵
+)
+.
+So if 
+𝑇
+ is not a multiple of 
+gcd
+⁡
+(
+𝐴
+,
+𝐵
+)
+, it’s impossible.
+
+Why this rule is trustworthy (friendly logic):
+
+gcd
+⁡
+(
+𝐴
+,
+𝐵
+)
+ is the “largest brick size” that fits both A and B perfectly.
+
+Any combination of A’s and B’s also fits this brick size.
+
+Therefore, the target must also fit the same brick size.
+
+Result:
+
+Check once: Is 
+𝑇
+%
+gcd
+⁡
+(
+𝐴
+,
+𝐵
+)
+=
+0
+?
+
+If yes, print “Yes”. Otherwise, print “No”.
+
+Complexity
+Computing 
+gcd
+⁡
+(
+𝐴
+,
+𝐵
+)
+ with Euclid’s algorithm: 
+𝑂
+(
+log
+⁡
+(
+min
+⁡
+(
+𝐴
+,
+𝐵
+)
+)
+)
+.
+
+Memory: 
+𝑂
+(
+1
+)
+.
+
+Code (C++)
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    long long A, B, T;
+    if (!(cin >> A >> B >> T)) return 0;
+
+    long long g = std::gcd(A, B); // Euclid's algorithm under the hood
+    cout << ((T % g == 0) ? "Yes\n" : "No\n");
+    return 0;
+}
+Quick examples
+A	B	T	gcd(A,B)	T % gcd	Answer
+2	4	5	2	1	No
+3	5	1	1	0	Yes
+6	9	15	3	0	Yes
+8	12	14	4	2	No
+Tip: If 
+gcd
+⁡
+(
+𝐴
+,
+𝐵
+)
+=
+1
+, Kai can reach any integer target 
+𝑇
+.
+
+Edge cases to keep in mind
+Huge values: Up to 
+10
+9
+, but gcd is fast.
+
+Equal A and B: Then 
+gcd
+⁡
+(
+𝐴
+,
+𝐵
+)
+=
+𝐴
+. You can only reach multiples of 
+𝐴
+.
+
+Target equals zero: Starting point is already 
+0
+. That’s trivially “Yes”.
+
+Minimal proof intuition
+Known fact: There exist integers 
+𝑝
+,
+𝑞
+ such that 
+gcd
+⁡
+(
+𝐴
+,
+𝐵
+)
+=
+𝑝
+𝐴
++
+𝑞
+𝐵
+.
+
+Scaling that and combining hops lets you construct any multiple of 
+gcd
+⁡
+(
+𝐴
+,
+𝐵
+)
+.
+
+Therefore, reachable positions are exactly the multiples of 
+gcd
+⁡
+(
+𝐴
+,
+𝐵
+)
+.
+
+So 
+𝑇
+ is reachable iff 
+gcd
+⁡
+(
+𝐴
+,
+𝐵
+)
+ divides 
+𝑇
+.
+
+
+
+  
+
+Therefore, it is possible to reach the target position using the available pearls.
