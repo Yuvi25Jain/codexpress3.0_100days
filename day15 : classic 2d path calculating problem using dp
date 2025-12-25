@@ -1,0 +1,99 @@
+/*ques : classical 2d grid path counting problem with obstracles
+
+description: 
+we are at 2d grid of (0,0) , we want to reach target (given input) R, C , we can only move right or down
+Some cells are blocked(pillars) , count all possible path that avoid pillar*/
+
+
+/* to move right : (x+1,y) and down : (x, y+1)*/
+
+
+/* recursive Brute force : exponetial  o(2^(R+C)
+
+
+try all the possible path , at each step go r or d , if we reach (r,c) count the path , if hit pillar stop
+
+drawback / inefficiency : to compute r,c we always need to find path (r-1,c) and (r,c-)
+repeat many times , repeated at (1,1) ... STORE RESULT INSTEAD OF RECOMPUTING THEM*/
+
+
+/*OPTIMISED SOLUTION:  DP breaks the problem into smaller subproblems , store their answer , build up to the final answer
+
+why dp ? it is overlapping subproblems , avoid recompute by filling grid once, TC : O(R*c)*/
+
+const  int MOD = 1000000007 ;
+
+/*set<pair<int,int>> pillars;*/
+
+// long long countPaths(int r ,  int c, int R, int C){
+//   if (r > R || c > C)  return 0; // Blocked cell 
+//   if (pillars.count({r, c})) return 0; 
+//   // Reached target 
+//   if (r == R && c == C) return 1; 
+//   // Move forward: Right or Down 
+//   long long right = countPaths(r+1, c, R, C); 
+//   long long down = countPaths(r, c+1, R, C); 
+//   return (right + down) % MOD; 
+    
+    
+//     /*fwd thinking right and down 
+    
+//     int countPathsForward(int r, int c, int R, int C) {
+//     if (r > R || c > C) return 0;          // out of bounds
+//     if (pillars.count({r,c})) return 0;    // blocked
+//     if (r == R && c == C) return 1;        // reached target
+
+//     // move forward: right or down
+//     return countPathsForward(r+1, c, R, C) + countPathsForward(r, c+1, R, C);
+// }
+// */
+// }
+
+
+
+
+
+
+int main()
+{
+   int R, C, K; 
+   cin >> R >> C >> K; 
+//   for (int i = 0; i < K; i++) 
+//   { 
+//       int pr, pc; 
+//       cin >> pr >> pc; 
+//       pillars.insert({pr, pc}); 
+       
+//   } 
+//   cout <<countPaths(0, 0 , R, C) % MOD << "\n"; 
+
+
+//optimised code
+
+
+// Mark pillars 
+vector<vector<bool>> blocked(R+1, vector<bool>(C+1, false)); 
+for (int i = 0; i < K; i++) { 
+    int r, c; 
+    cin >> r >> c; 
+    blocked[r][c] = true; 
+    
+} 
+// DP table 
+vector<vector<int>> dp(R+1, vector<int>(C+1, 0));
+dp[0][0] = 1; // start position 
+for (int r = 0; r <= R; r++) {
+    for (int c = 0; c <= C; c++) { 
+        if (blocked[r][c]) { 
+            dp[r][c] = 0; // pillar blocks path 
+            continue; 
+            
+        } 
+        if (r > 0) dp[r][c] = (dp[r][c] + dp[r-1][c]) % MOD; 
+        if (c > 0) dp[r][c] = (dp[r][c] + dp[r][c-1]) % MOD; 
+        
+    }
+    } 
+    cout << dp[R][C] << "\n";
+   return 0;
+}
