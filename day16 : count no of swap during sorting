@@ -1,0 +1,100 @@
+Problem 
+Title: Minimum Adjacent Swaps to Sort an Array
+
+Statement:  
+We are given an array of item IDs. We want to sort them in ascending order using only adjacent swaps. Each swap costs 1 unit. Find the minimum number of swaps required.
+
+Key Insight:
+
+The minimum number of adjacent swaps needed = number of inversions in the array.
+
+An inversion is a pair (i, j) such that i < j and arr[i] > arr[j].
+
+
+
+🐢 Brute Force Approach (O(N²))
+Check all pairs (i, j) with i < j.
+
+Count how many times arr[i] > arr[j].
+
+That count = answer.
+
+Works fine for N ≤ 1000.
+
+
+Optimized Approach (O(N log N) using Merge Sort)
+Use merge sort to count inversions while sorting.
+
+During merge step:
+
+If left[i] > right[j], then all remaining elements in left[i..end] form inversions with right[j].
+
+This reduces complexity to O(N log N).
+
+  I/P : 5
+  5 1 4 2 8
+
+  o/p : 4
+
+
+
+// ---------------- Brute Force ----------------
+long long countInversionsBrute(vector<int>& arr) {
+    long long swaps = 0;
+    int N = arr.size();
+    for (int i = 0; i < N; i++) {
+        for (int j = i+1; j < N; j++) {
+            if (arr[i] > arr[j]) swaps++;
+        }
+    }
+    return swaps;
+}
+
+// ---------------- Optimized (Merge Sort) ----------------
+long long mergeAndCount(vector<int>& arr, int l, int m, int r) {
+    vector<int> left(arr.begin()+l, arr.begin()+m+1);
+    vector<int> right(arr.begin()+m+1, arr.begin()+r+1);
+
+    int i = 0, j = 0, k = l;
+    long long inv = 0;
+
+    while (i < left.size() && j < right.size()) {
+        if (left[i] <= right[j]) {
+            arr[k++] = left[i++];
+        } else {
+            arr[k++] = right[j++];
+            inv += (left.size() - i); // count inversions
+        }
+    }
+    while (i < left.size()) arr[k++] = left[i++];
+    while (j < right.size()) arr[k++] = right[j++];
+    return inv;
+}
+
+long long mergeSortAndCount(vector<int>& arr, int l, int r) {
+    if (l >= r) return 0;
+    int m = (l + r) / 2;
+    long long inv = 0;
+    inv += mergeSortAndCount(arr, l, m);
+    inv += mergeSortAndCount(arr, m+1, r);
+    inv += mergeAndCount(arr, l, m, r);
+    return inv;
+}
+
+// ---------------- Main ----------------
+int main() {
+    int N;
+    cin >> N;
+    vector<int> arr(N);
+    for (int i = 0; i < N; i++) cin >> arr[i];
+
+    // Brute force
+    vector<int> arrBrute = arr;
+    cout << "Brute Force Swaps: " << countInversionsBrute(arrBrute) << "\n";
+
+    // Optimized
+    vector<int> arrOpt = arr;
+    cout << "Optimized Swaps: " << mergeSortAndCount(arrOpt, 0, N-1) << "\n";
+
+    return 0;
+}
