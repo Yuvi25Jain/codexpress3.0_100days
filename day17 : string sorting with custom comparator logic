@@ -1,0 +1,98 @@
+ques : string sorting with custom comparator logic
+
+
+brute force : w/o comparator or built in sort function , compare every pair 
+of book manually , swap them if they're out of order according to rule , repeat until list is sorted
+
+APPLY BUBBLE SORT or SELECTION SORT
+
+Implement bubble sort:
+
+For each pair (i, j), check rarity → power → title.
+
+Swap if needed.
+
+Complexity: O(N²) comparisons.
+
+Works fine for small N, but inefficient for N up to 10⁴.
+
+
+----------------------------------------------------------
+
+
+OPTIMISED APPROACH :
+
+Map rarity to numeric rank (Epic=3, Rare=2, Common=1).
+
+Write comparator:
+
+Compare rarity rank.
+
+If equal, compare power.
+
+If equal, compare title.
+
+Call sort() with this comparator.
+
+
+
+//brute force : bubble sort
+
+struct Book{
+    string title ;
+    string rarity ;
+    int power ;
+};
+
+int rareRank(const string& r){
+    if(r == "Epic") return 3 ;
+    if(r == "Rare") return 2 ;
+    return 1 ;
+}
+
+bool shouldSwap(const Book& a, const Book& b) {
+    int ra = rareRank(a.rarity), rb = rareRank(b.rarity);
+    if (ra != rb) return ra < rb;   // swap if a has lower rarity
+    if (a.power != b.power) return a.power < b.power; // swap if a has lower power
+    return a.title > b.title;       // swap if a comes later alphabetically
+}
+
+//OPTIMISED
+
+bool cmp(const Book& a, const Book& b) { 
+    int ra = rareRank(a.rarity), rb = rareRank(b.rarity); 
+    if (ra != rb) return ra > rb; 
+    if (a.power != b.power) return a.power > b.power; 
+    return a.title < b.title; 
+    
+}
+
+
+
+int main()
+{
+    int n ;
+    cin>>n;
+    vector<Book> books(n);
+    
+    for (int i = 0; i < n; i++) {
+        cin >> books[i].title >> books[i].rarity >> books[i].power;
+    }
+    
+    for(int i = 0 ; i< n  ; i++){
+        for(int j = 0 ; j< n-i-1 ; j++){
+            if(shouldSwap(books[j] , books[j+1])){
+                swap(books[j] , books[j+1]);
+            }
+        }
+    }
+    
+    cout<<"OPTIMISED : "<<endl;
+    sort(books.begin(), books.end(), cmp);
+    
+    for(auto &b : books){
+        cout<<b.title<<" "<<endl;
+    }
+
+    return 0;
+}
