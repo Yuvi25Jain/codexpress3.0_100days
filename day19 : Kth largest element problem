@@ -1,0 +1,66 @@
+
+
+ques : Kth largest element problem
+
+we have N scores , need the kth largest score(1 based indexing) , sorting all n score works but it is wasteful and large
+
+Brute force : sort the entire array in descending order , return the element at k-1 index , complex : o(nlogn) due to sorting*/
+
+brute :
+
+optimised approach : use min heap in which we are going to keep smaller element on top.
+in cpp to create min heap use priority_queue<int, vector<int>, greater<int>>*/
+
+
+
+
+approach start with empty min heap , go through each of them , if heap size > k remove the smallest one(pop top)
+at the end heap has exactly k largest element
+
+
+👉 Example:
+Scores = [3, 2, 1, 5, 6, 4], K=2
+
+Push 3 → heap [3]
+
+Push 2 → heap [2,3]
+
+Push 1 → heap [1,3,2] → size > 2 → pop smallest → heap [2,3]
+
+Push 5 → heap [2,3,5] → size > 2 → pop smallest → heap [3,5]
+
+Push 6 → heap [3,5,6] → size > 2 → pop smallest → heap [5,6]
+
+Push 4 → heap [4,6,5] → size > 2 → pop smallest → heap [5,6]
+Final heap = [5,6]. Top = 5 → 2nd largest ✅.*/
+
+
+int main() {
+  
+    //brute
+    
+    int n ;
+    cin>>n;
+    vector<int>a(n);
+    for(int i = 0 ; i<n ; i++){
+        cin>>a[i];
+    }
+    int k ;
+    cin>>k;
+    sort(a.begin(),a.end(),greater<int>()); //descedning sort
+    cout<<a[k-1]<<" ";
+    cout<<endl;
+    //min heap : optimised version
+    cout<<"Optimised sol: "<<endl;
+    
+    
+    priority_queue<int, vector<int> , greater<int>> minheap ; //creates mean heap in cpp
+    for(int x : a){
+        minheap.push(x);
+        if(minheap.size() > k){
+            minheap.pop();
+        }
+    }
+    cout<<minheap.top()<<" ";
+    return 0;
+}
