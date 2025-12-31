@@ -1,0 +1,23 @@
+question : given mat , return row index as well maxsum of that run .... if two row have same maxsum then consider row with low index
+
+   int r , c;
+    cin>>r>>c;
+    vector<vector<int>>mat(r, vector<int>(c));
+    int maxsum = INT_MIN;
+    int rowindex = 0 ;
+    
+    for(int i = 0 ; i<r ; i++){
+        int rowsum = 0 ;
+        for(int j = 0 ; j<c ; j++){
+            cin>>mat[i][j];
+            rowsum += mat[i][j];
+        }
+        if(rowsum > maxsum){
+            maxsum = rowsum ;
+            rowindex = i ;
+        }
+    }
+    cout<<rowindex<<" "<<maxsum<<endl;
+      
+    return 0;
+}
