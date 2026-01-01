@@ -1,0 +1,135 @@
+🧩 Problem — Glowstone Grid Update
+📌 Problem Statement
+Steve and Alex are Redstone engineers working on a magical Glowstone Grid inside the Overworld.
+The grid is represented as an m × n block map, where each block can either:
+
+Glowing (1) — powered by Redstone
+
+Unpowered (0) — dark and inactive
+
+Each block interacts with its eight neighbors (up, down, left, right, and diagonals).
+The Redstone update mechanism follows these rules:
+
+Any glowing block (1) with fewer than two glowing neighbors becomes unpowered (0).
+
+Any glowing block (1) with two or three glowing neighbors stays glowing (1).
+
+Any glowing block (1) with more than three glowing neighbors becomes unpowered (0).
+
+Any unpowered block (0) with exactly three glowing neighbors becomes glowing (1).
+
+All updates happen simultaneously across the grid.
+Your task: determine the next state of the Glowstone Grid.
+
+📥 Input Format
+First line: Integer T, the number of test cases.
+
+For each test case:
+
+One line: Two integers m and n (grid dimensions).
+
+Next m lines: n space‑separated integers (0 or 1) representing the current grid state.
+
+📤 Output Format
+For each test case, output the next state of the matrix.
+
+🔒 Constraints
+1 <= T <= 1000
+
+1 <= m, n <= 25
+
+matrix[i][j] ∈ {0, 1}
+
+🧩 Sample Input 0
+Code
+1
+4 3
+0 1 0
+0 0 1
+1 1 1
+0 0 0
+📌 Sample Output 0
+Code
+0 0 0
+1 0 1
+0 1 1
+0 1 0
+🧩 Sample Input 1
+Code
+1
+2 2
+1 1
+1 0
+📌 Sample Output 1
+Code
+1 1
+1 1
+🚀 Solution Approach
+This problem is a variation of Conway’s Game of Life:
+
+For each cell (i,j), count the number of glowing neighbors.
+
+Apply the four rules to decide the next state.
+
+Store results in a new grid (to ensure simultaneous updates).
+
+Print the updated grid.
+
+🧑‍💻 C++ Implementation
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+    while (T--) {
+        int m, n;
+        cin >> m >> n;
+        vector<vector<int>> grid(m, vector<int>(n));
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                cin >> grid[i][j];
+            }
+        }
+
+        vector<vector<int>> next(m, vector<int>(n, 0));
+        int dx[] = {-1,-1,-1,0,0,1,1,1};
+        int dy[] = {-1,0,1,-1,1,-1,0,1};
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                int neighbors = 0;
+                for (int k = 0; k < 8; k++) {
+                    int ni = i + dx[k], nj = j + dy[k];
+                    if (ni >= 0 && ni < m && nj >= 0 && nj < n) {
+                        neighbors += grid[ni][nj];
+                    }
+                }
+
+                if (grid[i][j] == 1) {
+                    if (neighbors < 2) next[i][j] = 0;
+                    else if (neighbors == 2 || neighbors == 3) next[i][j] = 1;
+                    else next[i][j] = 0;
+                } else {
+                    if (neighbors == 3) next[i][j] = 1;
+                    else next[i][j] = 0;
+                }
+            }
+        }
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                cout << next[i][j] << (j == n-1 ? '\n' : ' ');
+            }
+        }
+    }
+    return 0;
+}
+⚡ Complexity
+Time: O(m × n) per test case
+
+Space: O(m × n) for next grid
