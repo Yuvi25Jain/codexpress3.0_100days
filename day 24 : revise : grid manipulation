@@ -1,0 +1,157 @@
+🧩 Day 24 — Redstone Stability Challenge
+📌 Problem in Easy Words
+We have a big table (matrix) of 0s and 1s:
+
+Each row = one Redstone layer.
+
+Each column = one wire position.
+
+1 means the wire is ON, 0 means it’s OFF.
+
+We want to pick some rows (a subset).
+👉 Rule: If we pick k rows, then in every column, the number of ON signals must be at most k/2.
+If such a group exists, print their row indices. Otherwise, print [].
+
+📥 Input Format
+First line: T (number of test cases).
+
+For each test case:
+
+Line 1: Two integers m and n (rows and columns).
+
+Next m lines: n integers (0 or 1) representing the matrix.
+
+📤 Output Format
+For each test case:
+
+If a stable subset exists → print indices in ascending order inside [ ].
+
+If not → print [].
+
+🔒 Constraints
+1 <= T <= 1000
+
+1 <= m <= 10000
+
+1 <= n <= 5
+
+Each cell is either 0 or 1.
+
+🧩 Sample Input
+Code
+1
+3 4
+0 1 1 0
+0 0 0 1
+1 1 1 1
+📌 Sample Output
+Code
+[0,1]
+📝 Explanation
+Pick rows [0,1].
+
+k = 2 → k/2 = 1.
+
+Each column has ≤ 1 ON signal.
+
+So [0,1] is stable.
+
+🚀 Approach (Easy Words)
+Read the matrix.
+
+Try small groups of rows (1, 2, or 3 rows).
+
+For each group, count ON signals column‑wise.
+
+If all columns ≤ k/2 → stable.
+
+Print the group. If none works → print [].
+
+🧑‍💻 C++ Solution
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+bool istable(const vector<vector<int>>& grid , const vector<int>& sst){
+    int k = sst.size();
+    int n = grid[0].size();
+    vector<int> colcnt(n,0);
+    for(int idx : sst){
+        for(int j = 0 ; j<n ; j++){
+            colcnt[j] += grid[idx][j];
+        }
+    }
+    for(int j = 0 ; j<n ; j++){
+        if(colcnt[j] > k/2) return false;
+    }
+    return true;
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t;
+    cin >> t;
+    while(t--){
+        int m, n;
+        cin >> m >> n;
+        vector<vector<int>> grid(m, vector<int>(n));
+        for(int i = 0 ; i<m ; i++){
+            for(int j = 0 ; j<n ; j++){
+                cin >> grid[i][j];
+            }
+        }
+
+        vector<int> ans;
+        bool found = false;
+
+        // 1. Single rows
+        for(int i = 0; i < m && !found; i++){
+            vector<int> subset = {i};
+            if(istable(grid, subset)){
+                ans = subset; found = true;
+            }
+        }
+
+        // 2. Pairs
+        for(int i = 0 ; i<m && !found ; i++){
+            for(int j = i+1 ; j<m && !found ; j++){
+                vector<int> subset = {i, j};
+                if(istable(grid , subset)){
+                    ans = subset; found = true;
+                }
+            }
+        }
+
+        // 3. Triplets
+        for(int i = 0 ; i<m && !found ; i++){
+            for(int j = i+1 ; j<m && !found ; j++){
+                for(int k = j+1 ; k<m && !found ; k++){
+                    vector<int> subset = {i, j, k};
+                    if(istable(grid , subset)){
+                        ans = subset; found = true;
+                    }
+                }
+            }
+        }
+
+        if(found){
+            cout << "[";
+            for(size_t i = 0; i < ans.size(); i++){
+                cout << ans[i];
+                if(i < ans.size() - 1) cout << ",";
+            }
+            cout << "]\n";
+        } else {
+            cout << "[]\n";
+        }
+    }
+    return 0;
+}
+⚡ Complexity
+Checking stability: O(k × n).
+
+Since n ≤ 5, this is very fast.
+
+We only check small subsets (1–3 rows), so it works even for m = 10000.
