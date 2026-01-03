@@ -1,0 +1,134 @@
+📌 Problem in Easy Words
+Freddie has a wall made of blocks.
+
+The wall = a matrix of numbers.
+
+Each number = density of that block.
+
+TNT can blow up a square hole (like 1×1, 2×2, 3×3, …).
+
+TNT has a power limit P.
+
+Rule: TNT can only destroy a square if the sum of all numbers inside ≤ P.
+
+👉 Goal: Find the largest square size k that TNT can destroy.
+👉 If no square works, output 0.
+
+📥 Input Format
+First line: Three integers N, M, and P.
+
+Next N lines: M integers (densities).
+
+📤 Output Format
+A single integer: the maximum side length k.
+
+🔒 Constraints
+1 <= N, M <= 1000
+
+0 <= P <= 10^9
+
+1 <= Density[i][j] <= 10^5
+
+🧩 Sample Input 0
+Code
+3 3 10
+1 1 1
+1 1 1
+1 1 1
+📌 Sample Output 0
+Code
+3
+📝 Explanation
+3×3 square sum = 9 ≤ 10 ✅
+
+TNT can blow the whole wall.
+
+Answer = 3.
+
+🧩 Sample Input 1
+Code
+3 3 5
+2 2 2
+2 2 2
+2 2 2
+📌 Sample Output 1
+Code
+1
+📝 Explanation
+1×1 square sum = 2 ≤ 5 ✅
+
+2×2 square sum = 8 > 5 ❌
+
+3×3 square sum = 18 > 5 ❌
+
+Biggest valid = 1.
+
+🚀 Approach (Easy Words)
+Build a prefix sum matrix → lets you quickly calculate the sum of any square in O(1).
+
+Try square sizes from big to small (or use binary search).
+
+For each size k, check if there’s at least one k×k square with sum ≤ P.
+
+First valid k = answer.
+
+If none valid → output 0.
+
+🧑‍💻 C++ Solution
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int N, M;
+    long long P;
+    cin >> N >> M >> P;
+    vector<vector<long long>> grid(N+1, vector<long long>(M+1, 0));
+
+    // Read input
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= M; j++) {
+            cin >> grid[i][j];
+        }
+    }
+
+    // Build prefix sum matrix
+    vector<vector<long long>> pref(N+1, vector<long long>(M+1, 0));
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= M; j++) {
+            pref[i][j] = grid[i][j] + pref[i-1][j] + pref[i][j-1] - pref[i-1][j-1];
+        }
+    }
+
+    auto getSum = [&](int x1, int y1, int x2, int y2) {
+        return pref[x2][y2] - pref[x1-1][y2] - pref[x2][y1-1] + pref[x1-1][y1-1];
+    };
+
+    int ans = 0;
+    // Try sizes from largest to smallest
+    for (int k = min(N, M); k >= 1; k--) {
+        bool ok = false;
+        for (int i = 1; i + k - 1 <= N && !ok; i++) {
+            for (int j = 1; j + k - 1 <= M && !ok; j++) {
+                long long sum = getSum(i, j, i+k-1, j+k-1);
+                if (sum <= P) {
+                    ans = k;
+                    ok = true;
+                }
+            }
+        }
+        if (ans > 0) break;
+    }
+
+    cout << ans << "\n";
+    return 0;
+}
+⚡ Complexity
+Prefix sum build: O(N×M).
+
+Checking squares: O(N×M×min(N,M)) worst case.
+
+Works fine since N, M ≤ 1000.
