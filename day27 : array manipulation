@@ -1,0 +1,63 @@
+
+
+ques : array is given , divide it in half if it contain same element in both partition print yes else print noexcept
+note : odd array will give no bcuz it is not equal in size . so consider even only
+
+brute :  subset generation , not preferable : explode exponentially , o(2^n) , evry element have two choices
+
+better : sorting + pairing : no partioning , sort array , every element should appear twice or pair . if any element appear odd time 
+tc: o(nlogn)
+
+
+ optimised : frequency counting : count frequency of each item , every frequency must be even : o(n)
+
+
+
+
+
+int main()
+{
+    
+    
+    int t ;
+    cin>>t;
+    while(t--){
+        int n ;
+        cin>>n ;
+        vector<int>a(n);
+        for(int i = 0 ; i< n ; i++){
+            cin>>a[i];
+        }
+        if(n%2){
+            cout<<"no"<<endl;
+            continue;
+        }
+        
+        better
+        
+        sort(a.begin(), a.end());
+        bool ok = true ;
+        for(int i = 0 ; i< n ; i+=2){
+            if(a[i] != a[i+1]){
+                ok = false ;
+                break;
+            }
+        }
+        
+        unordered_map<int,int> freq ;
+        for(int i = 0 ; i<n ; i++){
+            freq[a[i]]++;
+        }
+        bool ok = true ;
+        for(auto &p : freq){ // auto &p = p.first = element value , p.second = count of that element
+            if(p.second % 2 != 0){ 
+                ok = false ; // if count is odd stop there no need to check further
+                break;
+            }
+        }
+        
+        cout<<(ok ? "yes" : "no");
+    }
+
+    return 0;
+}
