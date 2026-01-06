@@ -1,0 +1,126 @@
+📌 Problem Statement
+Steve is building a minecart system to transport villagers.
+The world is divided into Chunks, and the server has a strict rule:
+A railway section is only stable if the total length of its rails is perfectly divisible by the Chunk Stability Factor (K).
+
+You are given an array representing the lengths of individual rail segments placed in a row.
+Find the longest continuous subarray of rails such that their combined length is divisible by K.
+If no such segment exists, output 0.
+
+📥 Input Format
+First line: Two integers N (number of rail segments) and K (Chunk Stability Factor).
+
+Second line: N space-separated integers representing the length of each rail segment.
+
+📤 Output Format
+One integer: maximum number of segments in a valid stable subarray.
+
+🔒 Constraints
+1 <= N <= 10^5
+
+1 <= K <= 10^9
+
+1 <= Segment[i] <= 10^9
+
+🧩 Sample Input 0
+Code
+4 5
+5 10 15 20
+📌 Sample Output 0
+Code
+4
+📝 Explanation
+Entire array sum = 50.
+
+50 % 5 = 0 → divisible.
+
+So longest stable subarray = 4.
+
+🚀 Approach
+Compute prefix sums while traversing the array.
+
+Take each prefix sum modulo K.
+
+If two prefix sums have the same remainder, the subarray between them is divisible by K.
+
+Use a hash map to store the first index of each remainder.
+
+Track the maximum distance between equal remainders.
+
+Answer = longest subarray length found.
+
+👉 Pattern used: Prefix Sum + Hash Map (not sliding window).
+
+🧑‍💻 C++ Solution
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    long long k;
+    cin >> n >> k;
+    vector<long long> arr(n);
+    for (int i = 0; i < n; i++) cin >> arr[i];
+
+    unordered_map<long long,int> firstSeen; // remainder -> first index
+    long long prefix = 0;
+    int ans = 0;
+
+    for (int i = 0; i < n; i++) {
+        prefix += arr[i];
+        long long rem = prefix % k;
+        if (rem < 0) rem += k; // handle negatives
+
+        if (rem == 0) {
+            ans = max(ans, i+1); // whole prefix divisible
+        }
+        if (firstSeen.count(rem)) {
+            ans = max(ans, i - firstSeen[rem]);
+        } else {
+            firstSeen[rem] = i;
+        }
+    }
+
+    cout << ans << "\n";
+    return 0;
+}
+⚡ Complexity
+Time: O(N)
+
+Space: O(N) (hash map for remainders)
+
+🧩 Dry Run Example
+Input:
+Code
+6 7
+2 3 1 6 4 5
+Prefix sums: [2, 5, 6, 12, 16, 21]
+
+Modulo 7: [2, 5, 6, 5, 2, 0]
+
+Step by step:
+
+i=0 → rem=2 → store firstSeen[2]=0
+
+i=1 → rem=5 → store firstSeen[5]=1
+
+i=2 → rem=6 → store firstSeen[6]=2
+
+i=3 → rem=5 → seen before at index 1 → length = 3−1=2
+
+i=4 → rem=2 → seen before at index 0 → length = 4−0=4
+
+i=5 → rem=0 → whole prefix length = 6
+
+👉 Answer = 6 (entire array divisible by 7).
+
+🎯 Key Takeaway
+Brute force = O(N²).
+
+Efficient = O(N) using Prefix Sum + Hash Map.
+
+Sliding window doesn’t apply here because divisibility is not monotonic.
