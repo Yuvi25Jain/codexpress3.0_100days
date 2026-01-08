@@ -1,0 +1,169 @@
+📌 Problem Statement
+The Minecraft server runs on a strict ticking loop.
+You are analyzing a timeline of server events, represented by an array of integers (Event IDs).
+
+A Perfect Cycle (valid continuous subarray) must satisfy two conditions simultaneously:
+
+Day/Night Balance:
+
+Number of Odd Event IDs (Day events) = Number of Even Event IDs (Night events).
+
+Tick Synchronization:
+
+Sum of all Event IDs in the subarray is divisible by the server’s Tick Rate K.
+
+👉 Task: Count the total number of Perfect Cycles (continuous subarrays) that satisfy both conditions.
+
+📥 Input Format
+First line: Two integers N (number of events) and K (Tick Rate).
+
+Second line: N space‑separated integers representing Event IDs.
+
+📤 Output Format
+One integer: the count of valid Perfect Cycles.
+
+🔒 Constraints
+1 <= N <= 10^5
+
+1 <= K <= 10^9
+
+1 <= Event[i] <= 10^9
+
+🧩 Sample Input 0
+Code
+4 2
+2 4 6 8
+📌 Sample Output 0
+Code
+0
+📝 Explanation
+All numbers are Even → Odd count = 0, Even count > 0.
+
+Balance condition fails.
+
+No valid subarray → Answer = 0.
+
+🧩 Sample Input 1
+Code
+4 1
+1 2 1 2
+📌 Sample Output 1
+Code
+4
+📝 Explanation
+Since K=1, every sum is divisible.
+
+Only need balanced Odd/Even subarrays:
+
+[1,2], [2,1], [1,2], [1,2,1,2] → total 4.
+
+🚀 Approach
+Brute Force (O(N²)):
+Check all subarrays.
+
+Count odd/even numbers.
+
+Check divisibility of sum.
+
+Increment count if both conditions hold.
+
+Optimized (O(N)):
+Use Prefix Sum + Hash Map.
+
+Track:
+
+balance = oddCount - evenCount
+
+prefixSum % K
+
+If two prefixes have the same (balance, remainder), the subarray between them is valid.
+
+Count occurrences using a hash map.
+
+🧑‍💻 C++ Solution (Optimized)
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Key {
+    int balance; // oddCount - evenCount
+    long long rem; // prefixSum % K
+    bool operator==(const Key &other) const {
+        return balance == other.balance && rem == other.rem;
+    }
+};
+
+struct KeyHash {
+    size_t operator()(const Key &k) const {
+        return hash<long long>()(((long long)k.balance << 32) ^ k.rem);
+    }
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    long long k;
+    cin >> n >> k;
+    vector<long long> arr(n);
+    for (int i = 0; i < n; i++) cin >> arr[i];
+
+    long long prefixSum = 0;
+    int odd = 0, even = 0;
+    long long result = 0;
+
+    unordered_map<Key, long long, KeyHash> freq;
+
+    // Initial state: balance=0, rem=0
+    freq[{0,0}] = 1;
+
+    for (int i = 0; i < n; i++) {
+        prefixSum += arr[i];
+        if (arr[i] % 2 == 0) even++;
+        else odd++;
+
+        int balance = odd - even;
+        long long rem = prefixSum % k;
+        if (rem < 0) rem += k;
+
+        Key key{balance, rem};
+        if (freq.count(key)) {
+            result += freq[key];
+        }
+        freq[key]++;
+    }
+
+    cout << result << "\n";
+    return 0;
+}
+⚡ Complexity
+Time: O(N)
+
+Space: O(N)
+
+🧩 Dry Run Example
+Input:
+Code
+4 1
+1 2 1 2
+Steps:
+
+Initial: freq[(0,0)] = 1
+
+i=0 → odd=1, even=0, balance=1, rem=0 → freq[(1,0)]=1
+
+i=1 → odd=1, even=1, balance=0, rem=0 → result+=1 → freq[(0,0)]=2
+
+i=2 → odd=2, even=1, balance=1, rem=0 → result+=1 → freq[(1,0)]=2
+
+i=3 → odd=2, even=2, balance=0, rem=0 → result+=2 → freq[(0,0)]=3
+
+👉 Final result = 4 ✅
+
+🎯 Key Takeaway
+Brute force is too slow.
+
+Optimized solution uses Prefix Sum + Hash Map with composite key (balance, remainder).
+
+Efficiently counts valid subarrays in O(N).
