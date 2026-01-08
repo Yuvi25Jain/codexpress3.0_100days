@@ -1,0 +1,135 @@
+📜 Problem Statement
+Two teams, Red and Blue, earn scores every minute.
+We are given two arrays R and B of size n.
+We need to count Balanced Eras → continuous subarrays where the total score of Red equals the total score of Blue.
+
+🧒 Explaining to a 10‑year‑old
+Imagine two friends collecting candies every minute.
+
+Friend Red puts candies in his box (R[i]).
+
+Friend Blue puts candies in his box (B[i]).
+
+We want to find all time periods where both friends collected the same number of candies.
+That’s what we call a Balanced Era.
+
+🐌 Brute Force Approach
+Check every possible subarray:
+
+Pick a start index i.
+
+Pick an end index j.
+
+Calculate sum of Red and Blue between i and j.
+
+If equal → count it.
+
+Code (Brute Force)
+cpp
+// O(n^3) brute force
+int countBalancedBrute(vector<int>& R, vector<int>& B) {
+    int n = R.size();
+    int cnt = 0;
+    for(int i=0; i<n; i++) {
+        for(int j=i; j<n; j++) {
+            int sumR = 0, sumB = 0;
+            for(int k=i; k<=j; k++) {
+                sumR += R[k];
+                sumB += B[k];
+            }
+            if(sumR == sumB) cnt++;
+        }
+    }
+    return cnt;
+}
+⏱ Complexity:
+
+Time → O(n³) (too slow for large n)
+
+Space → O(1)
+
+🐇 Optimized Approach (Prefix Sum + HashMap)
+Instead of recalculating sums again and again, we use a trick:
+
+Create a new array diff[i] = R[i] - B[i].
+
+If Red and Blue scores are equal in a subarray, the sum of diff in that subarray will be 0.
+
+Use Prefix Sum:
+
+Keep running sum of diff.
+
+If the same prefix sum appears again, it means the subarray between those two points has sum = 0 (Balanced Era).
+
+Use a HashMap (unordered_map) to store frequency of prefix sums.
+
+Code (Optimal)
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> R(n), B(n);
+    for(int i=0; i<n; i++) cin >> R[i];
+    for(int i=0; i<n; i++) cin >> B[i];
+
+    // Step 1: Build diff array
+    vector<int> diff(n);
+    for(int i=0; i<n; i++) diff[i] = R[i] - B[i];
+
+    // Step 2: Prefix sum + hashmap
+    long long prefixSum = 0, count = 0;
+    unordered_map<long long, long long> freq;
+    freq[0] = 1; // base case
+
+    for(int i=0; i<n; i++) {
+        prefixSum += diff[i];
+        if(freq.find(prefixSum) != freq.end()) {
+            count += freq[prefixSum]; // add all previous occurrences
+        }
+        freq[prefixSum]++;
+    }
+
+    cout << count << endl;
+    return 0;
+}
+🧠 Pattern Used
+Prefix Sum → to avoid recalculating sums.
+
+HashMap → to quickly check if the same prefix sum appeared before.
+
+This is a classic Subarray Sum = K pattern (here K = 0).
+
+⏱ Complexity
+Time → O(n) (linear scan)
+
+Space → O(n) (hashmap storage)
+
+✅ Example Walkthrough
+Input:
+
+Code
+n = 3
+R = [1, 2, 3]
+B = [3, 2, 1]
+Step 1: diff = [-2, 0, 2]  
+Step 2: prefix sums = [-2, -2, 0]
+
+Balanced subarrays found:
+
+[1,1] → Red=2, Blue=2
+
+[0,2] → Red=6, Blue=6
+
+Output → 2
+
+🎯 Key Takeaways
+Brute force is slow → O(n³).
+
+Prefix Sum + HashMap makes it O(n).
+
+Always look for difference arrays when comparing two sequences.
+
+This is a DSA classic → Subarray Sum with HashMap.
