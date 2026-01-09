@@ -1,0 +1,173 @@
+
+
+
+
+📌 Problem Statement
+In a Minecraft world, players discover an ancient Redstone Mirror hidden beneath the village plaza.
+The mirror reacts only to perfectly symmetrical messages (palindromes).
+
+A message is valid if:
+
+All uppercase letters are converted to lowercase.
+
+All non‑alphanumeric characters are removed.
+
+The processed string reads the same forwards and backwards.
+
+👉 If valid, the mirror lights up (true). Otherwise, it remains dark (false).
+
+📥 Input Format
+First line: T (number of test cases).
+
+Next T lines: each contains a string s (the phrase to check).
+
+📤 Output Format
+For each test case, output "true" if the phrase is a palindrome, otherwise "false".
+
+🔒 Constraints
+1 ≤ s.length ≤ 2 × 10^5
+
+s consists only of printable ASCII characters.
+
+🧩 Sample Input 0
+Code
+1
+A man, a plan, a canal: Panama
+📌 Sample Output 0
+Code
+true
+🚀 Approaches
+1. Two‑Pointer Approach
+Idea: Use two indices (l and r) starting from both ends.
+
+Skip non‑alphanumeric characters.
+
+Compare lowercase characters.
+
+If mismatch → not palindrome.
+
+If all match → palindrome.
+
+Usefulness:
+
+Efficient: O(N) time, O(1) extra space.
+
+Best for large strings.
+
+Directly checks without building new strings.
+
+2. Stack Approach
+Idea: Push first half of characters onto a stack.
+
+Pop and compare with second half.
+
+Skip non‑alphanumeric and ignore case.
+
+Usefulness:
+
+Intuitive for beginners (mirrors the definition of palindrome).
+
+Good for educational purposes.
+
+Less space‑efficient (O(N) stack).
+
+🧑‍💻 C++ Solution — Two‑Pointer (Optimized)
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+bool isPalindrome(const string &s) {
+    int l = 0, r = (int)s.size() - 1;
+    while (l < r) {
+        while (l < r && !isalnum(s[l])) l++;
+        while (l < r && !isalnum(s[r])) r--;
+        if (tolower(s[l]) != tolower(s[r])) return false;
+        l++;
+        r--;
+    }
+    return true;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+    cin.ignore();
+    while (T--) {
+        string s;
+        getline(cin, s);
+        cout << (isPalindrome(s) ? "true" : "false") << "\n";
+    }
+    return 0;
+}
+🧑‍💻 C++ Solution — Stack Approach
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+bool isPalindromeStack(const string &s) {
+    string filtered;
+    for (char c : s) {
+        if (isalnum(c)) filtered.push_back(tolower(c));
+    }
+    int n = filtered.size();
+    stack<char> st;
+    for (int i = 0; i < n/2; i++) st.push(filtered[i]);
+    int start = (n % 2 == 0) ? n/2 : n/2 + 1;
+    for (int i = start; i < n; i++) {
+        if (st.top() != filtered[i]) return false;
+        st.pop();
+    }
+    return true;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+    cin.ignore();
+    while (T--) {
+        string s;
+        getline(cin, s);
+        cout << (isPalindromeStack(s) ? "true" : "false") << "\n";
+    }
+    return 0;
+}
+⚡ Complexity
+Two‑Pointer:
+
+Time: O(N)
+
+Space: O(1)
+
+Stack:
+
+Time: O(N)
+
+Space: O(N)
+
+🧩 Dry Run Example
+Input:
+Code
+1
+race a car
+Steps:
+
+Filtered string: raceacar
+
+Two‑Pointer: mismatch at c vs a → false
+
+Stack: mismatch when popping → false
+
+👉 Output: false
+
+🎯 Key Takeaway
+Two‑Pointer: Best for performance, minimal memory.
+
+Stack: Easier to understand conceptually, but less efficient.
+
+Both approaches are valid; choice depends on context (efficiency vs clarity).
