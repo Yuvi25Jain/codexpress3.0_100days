@@ -1,0 +1,136 @@
+📌 Problem Statement
+You discover an ancient enchanted scroll containing a string s, where each character represents a unique rune type used in crafting.
+
+The librarian enforces strict rules:
+
+Each fragment must contain at least one rune.
+
+A rune type (character) can appear in only one fragment.
+
+When fragments are placed back in order, they must reconstruct the original scroll s.
+
+👉 Goal: Split the scroll into the maximum number of valid fragments.
+Output the length of each fragment in order.
+
+📥 Input Format
+First line: Integer T (number of test cases).
+
+Next T lines: each contains a string s.
+
+📤 Output Format
+For each test case, print a list of integers representing the lengths of the fragments.
+
+🔒 Constraints
+1 ≤ T ≤ 1000
+
+s.length ≤ 1000
+
+🧩 Sample Input 0
+Code
+1
+ababcbacadefegdehijhklij
+📌 Sample Output 0
+Code
+9 7 8
+📝 Explanation
+Partition: "ababcbaca", "defegde", "hijhklij".
+
+Each rune type appears in at most one fragment.
+
+Splitting earlier would violate the rule.
+
+🧩 Sample Input 1
+Code
+1
+eccbbbbdec
+📌 Sample Output 1
+Code
+10
+🚀 Approach
+Find last occurrence of each rune:
+
+Traverse the string and record the last index of each character.
+
+Greedy partitioning:
+
+Traverse again, tracking the farthest last occurrence seen so far.
+
+When the current index equals that farthest last occurrence → cut a fragment.
+
+Store fragment lengths.
+
+👉 This ensures maximum fragments while respecting rules.
+
+🧑‍💻 C++ Solution (Fixed and Clean)
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> string_part(string &str) {
+    vector<int> last(26, -1);
+    for (size_t i = 0; i < str.size(); i++) {
+        last[str[i] - 'a'] = i; // record last occurrence
+    }
+
+    vector<int> ans;
+    int start = 0, end = 0;
+    for (int i = 0; i < (int)str.size(); i++) {
+        end = max(end, last[str[i] - 'a']);
+        if (i == end) {
+            ans.push_back(end - start + 1);
+            start = i + 1;
+        }
+    }
+    return ans;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+    while (T--) {
+        string s;
+        cin >> s;
+        vector<int> ans = string_part(s);
+        for (size_t i = 0; i < ans.size(); i++) {
+            cout << ans[i];
+            if (i < ans.size() - 1) cout << " ";
+        }
+        cout << "\n";
+    }
+    return 0;
+}
+⚡ Complexity
+Time: O(N) per test case (two passes).
+
+Space: O(1) (fixed array of size 26).
+
+🧩 Dry Run Example
+Input:
+Code
+1
+ababcbacadefegdehijhklij
+Steps:
+
+Last occurrence:
+
+a → 8, b → 5, c → 7, d → 14, e → 15, f → 11, g → 13, h → 19, i → 22, j → 23, k → 20, l → 21.
+
+Traverse:
+
+Fragment 1: indices [0–8] → length 9.
+
+Fragment 2: indices [9–15] → length 7.
+
+Fragment 3: indices [16–23] → length 8.
+
+👉 Output: 9 7 8.
+
+🎯 Key Takeaway
+Use last occurrence + greedy cut.
+
+Ensures each rune appears in only one fragment.
+
+Produces maximum number of fragments.
