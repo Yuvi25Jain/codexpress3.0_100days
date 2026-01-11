@@ -1,0 +1,131 @@
+📌 Problem Statement
+A player has built a row of Redstone lamps along a stone path. Each lamp has a power level written on it, arranged in non‑decreasing order.
+
+The player is given a target Redstone power value and must find two different lamps whose power levels add up exactly to this target.
+
+👉 Return their 1‑based indices [index1, index2].
+
+📥 Input Format
+First line: T (number of test cases).
+
+For each test case:
+
+First line: integer n (number of lamps).
+
+Second line: n integers (lamp power levels, sorted).
+
+Third line: integer target (desired sum).
+
+📤 Output Format
+For each test case, output two integers: index1 index2.
+
+🔒 Constraints
+2 ≤ n ≤ 3 × 10^4
+
+−1000 ≤ numbers[i] ≤ 1000
+
+−1000 ≤ target ≤ 1000
+
+Exactly one valid solution exists.
+
+Cannot use the same lamp twice.
+
+Must use O(1) extra space.
+
+🧩 Sample Input 0
+Code
+3
+4
+2 7 11 15
+9
+3
+2 3 4
+6
+2
+-1 0
+-1
+📌 Sample Output 0
+Code
+1 2
+1 3
+1 2
+🚀 Approach (Two‑Pointer)
+Place one pointer at the start (left) and one at the end (right).
+
+Compute sum = numbers[left] + numbers[right].
+
+If sum == target → return [left+1, right+1].
+
+If sum < target → move left++.
+
+If sum > target → move right--.
+
+Continue until solution is found.
+
+👉 Runs in O(n) time, O(1) space.
+
+🧑‍💻 C++ Solution
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+pair<int,int> twoSumSorted(vector<int>& nums, int target) {
+    int left = 0, right = nums.size() - 1;
+    while (left < right) {
+        int sum = nums[left] + nums[right];
+        if (sum == target) {
+            return {left + 1, right + 1}; // 1-based indices
+        } else if (sum < target) {
+            left++;
+        } else {
+            right--;
+        }
+    }
+    return {-1, -1}; // guaranteed solution, so shouldn't happen
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<int> nums(n);
+        for (int i = 0; i < n; i++) {
+            cin >> nums[i];
+        }
+        int target;
+        cin >> target;
+
+        auto ans = twoSumSorted(nums, target);
+        cout << ans.first << " " << ans.second << "\n";
+    }
+    return 0;
+}
+⚡ Complexity
+Time: O(n) per test case.
+
+Space: O(1).
+
+🧩 Dry Run Example
+Input:
+Code
+1
+5
+1 3 5 7 10
+11
+Steps:
+
+left=0 (1), right=4 (10) → sum=11 → target found.
+
+Output: 1 5.
+
+🎯 Key Takeaway
+Sorted array → two‑pointer is optimal.
+
+Guarantees O(n) time, O(1) space.
+
+Always finds the unique solution.
