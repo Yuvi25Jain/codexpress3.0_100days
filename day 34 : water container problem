@@ -1,0 +1,119 @@
+📌 Problem Statement
+Steve wants to cross a ravine using a plank supported by two pillars.
+
+Each pillar has a stability height.
+
+The plank is supported by the shorter pillar.
+
+The Safety Score is calculated as:
+
+(right  - left) * min (height[left] , height[right])
+
+
+👉 Find the maximum Safety Score possible.
+
+📥 Input Format
+First line: integer n (number of pillars).
+
+Second line: n space‑separated integers (pillar heights).
+
+📤 Output Format
+Single integer: maximum Safety Score.
+
+🔒 Constraints
+2 ≤ n ≤ 10^5
+
+0 ≤ height[i] ≤ 10^4
+
+🧩 Sample Input 0
+Code
+9
+1 8 6 2 5 4 8 3 7
+📌 Sample Output 0
+Code
+49
+📝 Explanation
+Choose pillar at index 1 (height 8) and index 8 (height 7).
+
+Distance = 8 − 1 = 7.
+
+Supporting height = min(8, 7) = 7.
+
+Safety Score = 7 × 7 = 49.
+
+🚀 Approach (Two‑Pointer Technique)
+Place one pointer at the start (left) and one at the end (right).
+
+Compute Safety Score = (right - left) * min(height[left], height[right]).
+
+Update maximum score.
+
+Move the pointer pointing to the shorter pillar (since taller one might still help later).
+
+Continue until left < right.
+
+👉 Runs in O(n) time, O(1) space.
+
+🧑‍💻 C++ Solution
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int maxSafetyScore(vector<int>& height) {
+    int left = 0, right = height.size() - 1;
+    int maxScore = 0;
+
+    while (left < right) {
+        int h = min(height[left], height[right]);
+        int score = (right - left) * h;
+        maxScore = max(maxScore, score);
+
+        // Move the pointer at the shorter pillar
+        if (height[left] < height[right]) {
+            left++;
+        } else {
+            right--;
+        }
+    }
+    return maxScore;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+    vector<int> height(n);
+    for (int i = 0; i < n; i++) cin >> height[i];
+
+    cout << maxSafetyScore(height) << "\n";
+    return 0;
+}
+⚡ Complexity
+Time: O(n)
+
+Space: O(1)
+
+🧩 Dry Run Example
+Input:
+Code
+5
+1 3 2 5 4
+Steps:
+
+left=0 (1), right=4 (4) → score=4×1=4
+
+left=1 (3), right=4 (4) → score=3×3=9
+
+left=2 (2), right=4 (4) → score=2×2=4
+
+left=3 (5), right=4 (4) → score=1×4=4
+👉 Max Safety Score = 9.
+
+🎯 Key Takeaway
+This is a two‑pointer optimization problem.
+
+Always move the pointer at the shorter pillar.
+
+Guarantees maximum Safety Score in O(n).
