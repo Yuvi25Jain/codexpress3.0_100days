@@ -1,0 +1,136 @@
+📌 Problem Statement
+Steve is preparing for a grand celebration in his Minecraft village.
+
+He has collected several magic potions, each with a specific power level.
+
+To activate a beacon, Steve must combine two potions whose total power = k.
+
+Once used, potions are removed from the inventory.
+
+Goal: Find the maximum number of beacon activations (pairs) possible.
+
+📥 Input Format
+First line: integer T (number of test cases).
+
+For each test case:
+
+First line: two integers n (number of potions), k (target sum).
+
+Second line: n space‑separated integers (potion power levels).
+
+📤 Output Format
+For each test case, output a single integer: maximum number of pairs.
+
+Output 0 if no valid pairs exist.
+
+🔒 Constraints
+1 ≤ T ≤ 100
+
+1 ≤ n ≤ 10^5
+
+1 ≤ potion[i] ≤ 10^9
+
+1 ≤ k ≤ 10^9
+
+🧩 Sample Input
+Code
+2
+4 5
+1 2 3 4
+5 6
+3 1 3 4 3
+📌 Sample Output
+Code
+2
+1
+📝 Explanation
+Case 1: Pairs (1,4) and (2,3) → total 2 pairs.
+
+Case 2: Only one pair (3,3) → total 1 pair.
+
+🚀 Approach
+We can solve this using a hash map (frequency count):
+
+Count occurrences of each potion power.
+
+For each potion x, check if k - x exists.
+
+Form as many pairs as possible using min(freq[x], freq[k-x]).
+
+Reduce counts after pairing.
+
+Special case: when x == k-x, use freq[x] / 2 pairs.
+
+👉 Runs in O(n) time per test case.
+
+🧑‍💻 C++ Solution
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int maxPairs(vector<int>& potions, int k) {
+    unordered_map<int,int> freq;
+    int pairs = 0;
+
+    for (int x : potions) freq[x]++;
+
+    for (int x : potions) {
+        int y = k - x;
+        if (freq[x] > 0 && freq[y] > 0) {
+            if (x == y) {
+                int count = freq[x] / 2;
+                pairs += count;
+                freq[x] -= count * 2;
+            } else {
+                int count = min(freq[x], freq[y]);
+                pairs += count;
+                freq[x] -= count;
+                freq[y] -= count;
+            }
+        }
+    }
+    return pairs;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+    while (T--) {
+        int n, k;
+        cin >> n >> k;
+        vector<int> potions(n);
+        for (int i = 0; i < n; i++) cin >> potions[i];
+
+        cout << maxPairs(potions, k) << "\n";
+    }
+    return 0;
+}
+⚡ Complexity
+Time: O(n) per test case.
+
+Space: O(n) for frequency map.
+
+🧩 Dry Run Example
+Input:
+Code
+1
+6 10
+2 8 2 6 4 6
+Steps:
+
+freq = {2:2, 8:1, 6:2, 4:1}
+
+Pair (2,8) → 1 pair.
+
+Pair (6,4) → 1 pair.
+👉 Max pairs = 2.
+
+🎯 Key Takeaway
+Use hash map frequency counting to maximize pairs.
+
+Special case when both potions are equal (x == k-x).
+
+Efficient for large inputs.
