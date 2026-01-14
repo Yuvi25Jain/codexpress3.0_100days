@@ -1,0 +1,126 @@
+📌 Problem Statement
+Deep inside a vast Minecraft desert biome lies an Ancient Pyramid Temple filled with rows of minecart chests, each containing emeralds.
+Steve has a magical Redstone Scanner that can collect emeralds from exactly k consecutive chests at a time.
+
+👉 Find the maximum emeralds Steve can collect from any continuous group of k chests.
+
+📥 Input Format
+First line: integer T (number of test cases).
+
+For each test case:
+
+First line: integer n (number of chests).
+
+Second line: array emeralds of size n (emeralds in each chest).
+
+Third line: integer k (size of sliding window).
+
+📤 Output Format
+For each test case, output a single integer — the maximum emeralds Steve can collect.
+
+🔒 Constraints
+1 ≤ n ≤ 10^5
+
+1 ≤ k ≤ n
+
+0 ≤ emeralds[i] ≤ 10^9
+
+🧩 Sample Input
+Code
+1
+5
+1 2 3 4 5
+2
+📌 Sample Output
+Code
+9
+📝 Explanation
+Possible sums of 2 consecutive chests:
+
+(1+2)=3, (2+3)=5, (3+4)=7, (4+5)=9
+
+Maximum = 9.
+
+🚀 Approach (Sliding Window)
+Compute sum of the first k chests.
+
+Slide the window across the array:
+
+Subtract the element leaving the window.
+
+Add the new element entering the window.
+
+Track the maximum sum seen.
+
+👉 Runs in O(n) time per test case, O(1) extra space.
+
+🧑‍💻 C++ Solution
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long max_slidewindow(vector<long long>& arr, int k) {
+    if (arr.empty() || k <= 0) return 0; // edge case
+
+    long long wsum = 0;
+    for (int i = 0; i < k; i++) {
+        wsum += arr[i];
+    }
+    long long maxsum = wsum;
+
+    for (int i = k; i < (int)arr.size(); i++) { // cast to int to avoid warning
+        wsum += arr[i] - arr[i - k];
+        maxsum = max(maxsum, wsum);
+    }
+    return maxsum;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, k;
+        cin >> n;
+        vector<long long> a(n);
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+        }
+        cin >> k;
+
+        cout << max_slidewindow(a, k) << "\n";
+    }
+    return 0;
+}
+⚡ Complexity
+Time: O(n) per test case.
+
+Space: O(1).
+
+🧩 Dry Run Example
+Input:
+Code
+1
+6
+2 1 5 1 3 2
+3
+Steps:
+
+First window (2+1+5)=8 → max=8
+
+Next (1+5+1)=7 → max=8
+
+Next (5+1+3)=9 → max=9
+
+Next (1+3+2)=6 → max=9
+
+👉 Output: 9.
+
+🎯 Key Takeaway
+This is a Sliding Window problem.
+
+Efficiently computes maximum sum of k consecutive elements.
+
+Avoids recomputation by updating the window sum in O(1).
