@@ -1,0 +1,187 @@
+
+
+we  wants to know: 1 = on and 0 = off
+
+Is there any group of k lamps in a row where ALL lamps are ON?
+
+If yes → tell where that group starts
+
+If no → return -1
+
+🧠 Example (Think Like a Kid)
+Lamps:  1 0 1 1 0 1
+Index:  0 1 2 3 4 5
+k = 3
+
+
+Check every group of 3:
+
+[1 0 1] ❌ (one lamp off)
+
+[0 1 1] ❌
+
+[1 1 0] ❌
+
+[1 0 1] ❌
+
+👉 No group has all 1s
+
+✅ Answer = -1
+
+🧩 DSA DOMAIN / PATTERN USED
+🔹 Pattern Name: Sliding Window
+
+This problem belongs to:
+
+Arrays
+
+Sliding Window Technique
+
+Fixed-size window
+
+🤔 How to Think About the Solution (From Scratch)
+Step 1: Brute Force Idea (Slow Way)
+
+Check every group of k lamps
+
+Count how many 1s are inside
+
+If count == k → success
+
+❌ Problem:
+This checks the same lamps again and again → too slow
+
+Step 2: Smart Idea 💡 (Sliding Window)
+
+Think of a window of size k that slides one step at a time.
+
+Instead of counting again and again:
+
+Remove the lamp going out
+
+Add the lamp coming in
+
+Like a puzzle piece moving forward 🧩
+
+🪟 Sliding Window Explained Like a Puzzle
+Window size = k
+
+[1 0 1]  ← first window
+    ↓ slide
+[0 1 1]
+    ↓
+[1 1 0]
+
+
+We only:
+
+add one new lamp
+
+remove one old lamp
+
+Very fast ⚡
+
+✅ Algorithm (Kid Version)
+
+Look at the first k lamps
+
+Count how many are ON (1)
+
+If all are ON → return index 0
+
+Slide the window one step:
+
+Add next lamp
+
+Remove previous lamp
+
+If at any point count == k → return starting index
+
+If finished and nothing found → return -1
+
+⏱️ Time & Space Complexity (Simple)
+Time Complexity
+
+We scan the lamps only once
+
+O(n) per test case
+
+Space Complexity
+
+Only a few variables used
+
+O(1) extra space
+
+✔️ Very optimized
+
+🧪 Edge Cases to Remember
+
+k > n → impossible → -1
+
+All lamps OFF → -1
+
+Lamps already ON at start → 0
+
+🧾 Final Code (GitHub Ready)
+#include <bits/stdc++.h>
+using namespace std;
+
+// This function finds the first index
+// where k consecutive lamps are all ON (1)
+int firstAllOnWindow(const vector<int>& lamps, int k) {
+    int n = lamps.size();
+    if (k > n) return -1;
+
+    int onCount = 0;
+
+    // Count ON lamps in first window
+    for (int i = 0; i < k; i++) {
+        onCount += lamps[i];
+    }
+
+    if (onCount == k) return 0;
+
+    // Slide the window
+    for (int i = k; i < n; i++) {
+        onCount += lamps[i];       // add new lamp
+        onCount -= lamps[i - k];   // remove old lamp
+
+        if (onCount == k) {
+            return i - k + 1;
+        }
+    }
+
+    return -1;
+}
+
+int main() {
+    int t;
+    cin >> t;
+
+    while (t--) {
+        int n;
+        cin >> n;
+
+        vector<int> lamps(n);
+        for (int i = 0; i < n; i++) {
+            cin >> lamps[i];
+        }
+
+        int k;
+        cin >> k;
+
+        cout << firstAllOnWindow(lamps, k) << endl;
+    }
+
+    return 0;
+}
+
+🏁 Final Takeaway (Puzzle Completed)
+
+This problem is a classic Sliding Window
+
+Learn it once → reuse in many problems
+
+Always ask:
+
+“Can I slide instead of recomputing?”
