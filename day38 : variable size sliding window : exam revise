@@ -1,0 +1,122 @@
+🧩 DSA Pattern: Sliding Window (Variable Size)
+Day 38 — Emerald Cave Trap
+📌 Problem Statement
+Deep underground in a Minecraft cave, there are n connected tunnels, each containing emeralds.
+
+You can mine emeralds from a continuous sequence of tunnels.
+
+Rule: If two tunnels in your chosen sequence contain the same emerald count, the Redstone trap activates and you lose everything.
+
+Goal: Choose exactly one continuous subarray where all emerald counts are unique, and maximize the sum of emeralds collected.
+
+📥 Input Format
+First line: integer T (number of test cases).
+
+For each test case:
+
+First line: integer n (number of tunnels).
+
+Second line: n space‑separated integers, where tunnel[i] = emeralds in the i‑th tunnel.
+
+📤 Output Format
+For each test case, print a single integer — the maximum emeralds you can safely mine.
+
+🔒 Constraints
+1 ≤ T ≤ 1000
+
+1 ≤ n ≤ 10^5
+
+1 ≤ tunnel[i] ≤ 10^4
+
+Total input size across test cases ≤ 10^6.
+
+🧩 Sample Input
+Code
+1
+5
+4 2 4 5 6
+📌 Sample Output
+Code
+17
+📝 Explanation
+Optimal subarray: [2,4,5,6] → sum = 17.
+
+[4,2,4,5,6] invalid because 4 repeats.
+
+🚀 Approach (Sliding Window + HashSet)
+Use two pointers (left, right) to maintain a window of unique emerald counts.
+
+Track current sum of emeralds in the window.
+
+If a duplicate is found, shrink from the left until unique again.
+
+Update maximum sum at each step.
+
+👉 Runs in O(n) per test case.
+
+🧑‍💻 C++ Solution
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long maxUniqueSum(vector<int>& tunnels) {
+    unordered_set<int> seen;
+    long long maxSum = 0, currSum = 0;
+    int left = 0;
+
+    for (int right = 0; right < tunnels.size(); right++) {
+        while (seen.count(tunnels[right])) {
+            seen.erase(tunnels[left]);
+            currSum -= tunnels[left];
+            left++;
+        }
+        seen.insert(tunnels[right]);
+        currSum += tunnels[right];
+        maxSum = max(maxSum, currSum);
+    }
+    return maxSum;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+    while (T--) {
+        int n;
+        cin >> n;
+        vector<int> tunnels(n);
+        for (int i = 0; i < n; i++) cin >> tunnels[i];
+
+        cout << maxUniqueSum(tunnels) << "\n";
+    }
+    return 0;
+}
+⚡ Complexity
+Time: O(n) per test case.
+
+Space: O(n) for the set.
+
+🧩 Dry Run Example
+Input:
+Code
+1
+9
+5 2 1 2 5 2 1 2 5
+Steps:
+
+Window expands: [5,2,1] → sum=8 → max=8
+
+Next element 2 is duplicate → shrink window.
+
+Later window [1,2,5] → sum=8 → max=8.
+
+👉 Output: 8.
+
+🎯 Key Takeaway
+This is a variable‑size sliding window problem.
+
+Maintain uniqueness with a set.
+
+Track maximum sum dynamically.
