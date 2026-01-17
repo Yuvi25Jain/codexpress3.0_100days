@@ -1,0 +1,126 @@
+📌 Problem Statement
+You are exploring a Minecraft path made of blocks (nums).
+
+Each block is either odd or even.
+
+A trail is a continuous subarray of blocks.
+
+A trail is special if it contains exactly k odd blocks.
+
+👉 Task: Count how many special trails exist in the path.
+
+📥 Input Format
+First line: integer T (number of test cases).
+
+For each test case:
+
+First line: integers n (length of path), k (required odd count).
+
+Second line: array nums of size n.
+
+📤 Output Format
+For each test case, print the number of special trails.
+
+🔒 Constraints
+1 ≤ T ≤ 1000
+
+1 ≤ k ≤ n ≤ 50,000
+
+1 ≤ nums[i] ≤ 100,000
+
+Total input size across all test cases ≤ 10^6.
+
+🧩 Sample Input
+Code
+1
+5 3
+1 1 2 1 1
+📌 Sample Output
+Code
+2
+📝 Explanation
+Subarrays with exactly 3 odd numbers:
+
+[1,1,2,1]
+
+[1,2,1,1]
+
+Total = 2.
+
+🚀 Approach (Prefix Sum + HashMap)
+Convert each number to 1 if odd, 0 if even.
+
+Maintain a running prefix sum = count of odd numbers so far.
+
+For each prefix sum curr, we want (curr - k) to have appeared before.
+
+That means there exists a subarray ending here with exactly k odd numbers.
+
+Use a hashmap to store frequency of prefix sums.
+
+Accumulate counts.
+
+👉 Runs in O(n) per test case.
+
+🧑‍💻 C++ Solution
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long countSpecialTrails(vector<int>& nums, int k) {
+    unordered_map<int,long long> freq;
+    freq[0] = 1; // base case: zero odds before start
+    long long ans = 0;
+    int prefix = 0;
+
+    for (int x : nums) {
+        if (x % 2 != 0) prefix++; // odd block
+        if (freq.count(prefix - k)) {
+            ans += freq[prefix - k];
+        }
+        freq[prefix]++;
+    }
+    return ans;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+    while (T--) {
+        int n, k;
+        cin >> n >> k;
+        vector<int> nums(n);
+        for (int i = 0; i < n; i++) cin >> nums[i];
+
+        cout << countSpecialTrails(nums, k) << "\n";
+    }
+    return 0;
+}
+⚡ Complexity
+Time: O(n) per test case.
+
+Space: O(n) for hashmap.
+
+🧩 Dry Run Example
+Input:
+Code
+1
+10 2
+2 2 2 1 2 2 1 2 2 2
+Steps:
+
+Odd positions at indices 3 and 6.
+
+Count subarrays with exactly 2 odds → 16.
+
+👉 Output: 16.
+
+🎯 Key Takeaway
+This is a prefix sum + hashmap problem.
+
+Efficiently counts subarrays with exactly k odd numbers.
+
+Avoids brute force O(n²).
