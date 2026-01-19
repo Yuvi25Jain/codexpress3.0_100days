@@ -1,0 +1,132 @@
+📌 Problem Statement
+In the vast world of Minecraft, a player explores a long stretch of land made of blocks.
+
+Each block contains a certain number of resources (diamonds, emeralds, etc.).
+
+A resource‑rich zone is defined as the longest contiguous sequence of blocks such that the total resources ≥ threshold T.
+
+If no such region exists, return -1.
+
+👉 Task: Find the length of the largest contiguous subarray whose sum ≥ T.
+
+📥 Input Format
+First line: integer t (number of test cases).
+
+For each test case:
+
+First line: integer n (number of blocks).
+
+Second line: array blocks of size n.
+
+Third line: integer T (minimum resources required).
+
+📤 Output Format
+For each test case, output a single integer:
+
+The length of the largest contiguous block region with sum ≥ T.
+
+Or -1 if no such region exists.
+
+🔒 Constraints
+1 ≤ t ≤ 100
+
+1 ≤ n ≤ 10^5
+
+0 ≤ blocks[i] ≤ 10^9
+
+1 ≤ T ≤ 10^18
+
+Total blocks across all test cases ≤ 10^6.
+
+🧩 Sample Input
+Code
+1
+5
+1 1 1 1 1
+10
+📌 Sample Output
+Code
+-1
+📝 Explanation
+Total resources in all blocks = 5 < 10.
+
+No valid subarray exists → output -1.
+
+🚀 Approach
+We use a sliding window:
+
+Expand window by moving right pointer and adding resources.
+
+While sum ≥ T, update maximum length.
+
+Shrink window from left to explore longer possible zones.
+
+If no valid zone found, return -1.
+
+👉 Runs in O(n) per test case.
+
+🧑‍💻 C++ Solution
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int largestResourceRichZone(vector<int>& blocks, long long T) {
+    long long sum = 0;
+    int maxLen = -1;
+    int left = 0;
+
+    for (int right = 0; right < blocks.size(); right++) {
+        sum += blocks[right];
+        while (left <= right && sum >= T) {
+            maxLen = max(maxLen, right - left + 1);
+            sum -= blocks[left++];
+        }
+    }
+    return maxLen;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<int> blocks(n);
+        for (int i = 0; i < n; i++) cin >> blocks[i];
+        long long T;
+        cin >> T;
+
+        cout << largestResourceRichZone(blocks, T) << "\n";
+    }
+    return 0;
+}
+⚡ Complexity
+Time: O(n) per test case.
+
+Space: O(1) extra (besides input array).
+
+🧩 Dry Run Example
+Input:
+Code
+1
+6
+2 3 1 2 4 3
+7
+Steps:
+
+Window [2,3,1,2] → sum=8 ≥ 7 → length=4.
+
+Window [3,1,2,4] → sum=10 ≥ 7 → length=4.
+
+Window [1,2,4,3] → sum=10 ≥ 7 → length=4.
+👉 Output: 4.
+
+🎯 Key Takeaway
+This is a sliding window problem.
+
+Efficiently finds the longest subarray with sum ≥ T.
+
+Returns -1 if no valid region exists
