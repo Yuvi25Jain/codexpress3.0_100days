@@ -1,0 +1,144 @@
+In Minecraft, a powerful ritual is performed using n magical Beacons.
+
+Beacons are numbered from 1 to n.
+
+The ritual eliminates beacons in rounds:
+
+Left to Right: break the first beacon, then every alternate beacon.
+
+Right to Left: break the last remaining beacon, then every alternate beacon.
+
+Repeat, alternating directions, until only one beacon remains.
+
+👉 Task: Determine which beacon survives.
+
+📥 Input Format
+First line: integer T (number of test cases).
+
+Each test case: integer n (number of beacons).
+
+📤 Output Format
+For each test case, output the number of the final remaining beacon.
+
+🔒 Constraints
+1 ≤ T ≤ 1000
+
+1 ≤ n ≤ 1000
+
+🧩 Sample Input
+Code
+1
+9
+📌 Sample Output
+Code
+6
+📝 Explanation
+Start: [1,2,3,4,5,6,7,8,9]
+
+Round 1 (L→R): [2,4,6,8]
+
+Round 2 (R→L): [2,6]
+
+Round 3 (L→R): [6]
+
+Surviving beacon = 6.
+
+🚀 Approach
+This is a Simulation / Elimination pattern problem:
+
+Simulation → imitate the process step by step.
+
+Elimination → repeatedly remove elements until one remains.
+
+Alternate directions each round until only one beacon survives.
+
+👉 Since n ≤ 1000, direct simulation is efficient.
+
+🧑‍💻 C++ Solution
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// Function to simulate beacon elimination ritual
+int beaconSurvivor(int n) {
+    vector<int> arr(n);
+    // iota fills arr with consecutive numbers starting from 1
+    // arr = [1,2,3,...,n]
+    iota(arr.begin(), arr.end(), 1);
+
+    bool leftToRight = true;
+
+    while (arr.size() > 1) {
+        vector<int> next;
+        if (leftToRight) {
+            // eliminate first, keep alternate starting from index 1
+            for (int i = 1; i < arr.size(); i += 2) {
+                next.push_back(arr[i]);
+            }
+        } else {
+            // eliminate last, keep alternate from right side
+            for (int i = arr.size() - 2; i >= 0; i -= 2) {
+                next.push_back(arr[i]);
+            }
+            reverse(next.begin(), next.end());
+        }
+        arr = next;
+        leftToRight = !leftToRight; // switch direction
+    }
+    return arr[0];
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+    while (T--) {
+        int n;
+        cin >> n;
+        cout << beaconSurvivor(n) << "\n";
+    }
+    return 0;
+}
+⚡ Complexity
+Time: O(n log n) (array halves each round).
+
+Space: O(n).
+
+🧩 Dry Run Example
+Input:
+Code
+1
+6
+Steps:
+
+[1,2,3,4,5,6]
+
+Round 1 (L→R): [2,4,6]
+
+Round 2 (R→L): [2]  
+👉 Output: 2.
+
+🎯 Key Takeaways
+Simulation/Elimination Pattern
+
+Problems where you imitate elimination step by step until one element remains.
+
+Example: Josephus problem, beacon ritual, musical chairs.
+
+Use of iota in C++
+
+iota(arr.begin(), arr.end(), startValue) fills a container with consecutive numbers.
+
+Example: iota(a.begin(), a.end(), 2) → [2,3,4,...].
+
+Saves writing a loop for initialization.
+
+General Use of iota
+
+Initialize arrays/vectors with sequential IDs.
+
+Create test data quickly.
+
+Cleaner and shorter than manual loops.
