@@ -1,0 +1,149 @@
+📌 Problem Summary
+
+You are given a square village grid of size n × n.
+
+Each cell contains the number of villagers living there.
+
+You must divide the village into two non-overlapping territories.
+
+Each territory must contain at least one cell.
+
+Goal: Minimize the absolute difference in population between the two territories.
+
+🧠 How to Think About This Problem (Simple Words)
+
+Imagine all grid cells placed in a bag.
+
+You must:
+
+Pick some cells for Territory A
+
+The remaining cells go to Territory B
+
+Both territories must have at least one cell
+
+You want their population totals to be as close as possible
+
+So this becomes:
+
+Split a list of numbers into two non-empty parts with minimum difference
+
+🔍 DSA Pattern Used
+
+Subset Sum
+
+0/1 Knapsack (DP)
+
+Partition Problem
+
+❌ Meet-in-the-Middle does not work here
+(because `n = 8 → 64 cells → 2³² subsets = impossible)
+
+⚙️ Correct Approach
+
+Flatten the grid into a 1D array
+
+Let tl = total population
+
+Use DP to mark which sums are possible
+
+Try all valid sums s
+
+Minimize |tl − 2 × s|
+
+Ensure both territories are non-empty
+
+⏱️ Complexity
+Type	Value
+Time	O(n² × totalSum)
+Space	O(totalSum)
+Max totalSum	64 × 100 = 6400
+
+✔ Safe for all constraints
+
+🧪 Edge Cases Handled
+
+Single cell grid (n = 1)
+
+All equal values
+
+Maximum size grid
+
+Multiple test cases
+
+✅ Final Accepted Code (GitHub Ready)
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+
+    while (t--) {
+        int n;
+        cin >> n;
+
+        vector<int> ans;
+        long long tl = 0;
+
+        // Read grid and flatten
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int vl;
+                cin >> vl;
+                ans.push_back(vl);
+                tl += vl;
+            }
+        }
+
+        int sz = ans.size();
+
+        // Cannot split one cell into two non-empty parts
+        if (sz == 1) {
+            cout << 0 << endl;
+            continue;
+        }
+
+        int S = tl;
+        vector<char> dp(S + 1, 0);
+        dp[0] = 1;
+
+        // Subset sum DP
+        for (int x : ans) {
+            for (int s = S; s >= x; s--) {
+                if (dp[s - x]) dp[s] = 1;
+            }
+        }
+
+        long long bestd = LLONG_MAX;
+
+        // Find minimum difference
+        for (int s = 1; s < S; s++) {
+            if (dp[s]) {
+                bestd = min(bestd, llabs(S - 2LL * s));
+            }
+        }
+
+        cout << bestd << endl;
+    }
+
+    return 0;
+}
+
+🧩 Final Takeaway
+
+This is not a brute-force or meet-in-the-middle problem
+
+It is a classic partition / subset sum DP
+
+Always check input limits before choosing an algorithm
+
+🚀 Useful for Similar Problems
+
+Minimum subset difference
+
+Fair division problems
+
+Resource balancing
+
+Grid → array reduction problems
