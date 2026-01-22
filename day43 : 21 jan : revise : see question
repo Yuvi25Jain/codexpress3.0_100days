@@ -1,0 +1,110 @@
+Problem Statement
+You are given a set of buildings, each with a certain height, represented as an array of non-negative integers.
+A master builder can rearrange the buildings to form new skyline layouts. Due to limited resources, they can perform at most k rearrangements.
+Each rearrangement:
+Produces a new ordering of the buildings
+Uses the same set of building heights
+Does not modify or remove any building
+Your task is to determine how many unique skyline sequences can be formed.
+Input Format
+An integer t — number of test cases
+For each test case:
+An integer n — number of buildings
+An array heights of size n
+An integer k — maximum number of rearrangements allowed
+Output Format
+For each test case, output a single integer representing the number of unique skyline sequences that can be formed.
+Constraints
+1 ≤ t ≤ 5
+1 ≤ n ≤ 10
+0 ≤ k ≤ n!
+0 ≤ heights[i] ≤ 100
+Example
+Input
+Copy code
+
+1
+3
+3 2 1
+2
+Output
+Copy code
+
+6
+Explanation
+All possible unique permutations:
+Copy code
+
+[3,2,1] [3,1,2] [2,3,1]
+[2,1,3] [1,3,2] [1,2,3]
+Key Observations
+If k == 0, no rearrangement is allowed, so only the original skyline exists → answer is 1
+If k ≥ 1, all unique permutations of the buildings are possible
+Duplicate building heights reduce the number of unique permutations
+Approach
+If k == 0, return 1
+Count the frequency of each building height
+Compute the number of unique permutations using:
+Time & Space Complexity
+Time Complexity: O(n)
+Space Complexity: O(n)
+C++ Implementation
+Copy code
+Cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long factorial(int x) {
+    long long res = 1;
+    for (int i = 2; i <= x; i++) {
+        res *= i;
+    }
+    return res;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t;
+    cin >> t;
+
+    while (t--) {
+        int n;
+        cin >> n;
+
+        vector<int> heights(n);
+        for (int i = 0; i < n; i++) {
+            cin >> heights[i];
+        }
+
+        long long k;
+        cin >> k;
+
+        // If no rearrangement is allowed
+        if (k == 0) {
+            cout << 1 << "\n";
+            continue;
+        }
+
+        // Count frequency of each height
+        unordered_map<int, int> freq;
+        for (int h : heights) {
+            freq[h]++;
+        }
+
+        // Calculate unique permutations
+        long long result = factorial(n);
+        for (auto &p : freq) {
+            result /= factorial(p.second);
+        }
+
+        cout << result << "\n";
+    }
+
+    return 0;
+}
+Notes
+Works for all edge cases (k = 0, duplicate heights, n = 1)
+Safe within given constraints (n ≤ 10)
+Uses long long to avoid overflow
