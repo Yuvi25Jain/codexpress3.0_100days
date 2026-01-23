@@ -1,0 +1,117 @@
+# 🧩 DSA Revision: Maze Escape Problem
+
+## 📌 Problem in Simple Words
+You are given an `n × n` grid (maze):
+- `0` → open path
+- `1` → blocked (Bedrock)
+Start at `(0,0)` and check if you can reach `(n-1,n-1)` by moving **Up, Down, Left, Right**.
+
+Output: `"YES"` if escape is possible, else `"NO"`.
+
+---
+
+## 🏷️ DSA Pattern Category
+- **Graph Traversal / Grid BFS-DFS**
+- Classic **Pathfinding in Matrix** problem.
+
+---
+
+## 🧠 How to Start Thinking (from scratch)
+1. Represent the maze as a graph → each cell is a node.
+2. Valid moves = 4 directions (up, down, left, right).
+3. Question reduces to: **Is there a path from start to end?**
+4. Think of **visited array** to avoid infinite loops.
+5. Choose traversal method:
+   - DFS (recursive) OR BFS (queue).
+
+---
+
+## 🔨 Brute Force Approach
+- Try all possible paths recursively (DFS).
+- Backtrack if blocked or visited.
+- **Complexity:**  
+  - Time: `O(4^(n*n))` worst case (exponential).  
+  - Space: recursion stack.
+
+---
+
+## ⚡ Optimized Approach
+- Use **BFS** (queue) or **DFS iterative**:
+  - Start from `(0,0)`.
+  - Explore neighbors if open and not visited.
+  - Stop if `(n-1,n-1)` is reached.
+- **Complexity:**  
+  - Time: `O(n^2)` (each cell visited once).  
+  - Space: `O(n^2)` (visited + queue).
+
+---
+
+## 🎯 Tricks & Tips
+- Always mark visited cells to avoid cycles.
+- BFS is safer than DFS (no recursion depth issues).
+- If asked for shortest path → BFS naturally gives it.
+- If only reachability is asked → either BFS or DFS works.
+- Whenever you see **grid + movement + reachability** → think **Graph Traversal** immediately.
+
+---
+
+## ✅ Key Takeaway
+This is a **Graph Traversal pattern** problem.  
+Next time you see a grid with movement rules, map it to BFS/DFS with a visited array.  
+Brute force = exponential, Optimized = `O(n^2)`.
+
+---
+
+## 💻 C++ Code (GitHub‑Ready)
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+bool canEscape(vector<vector<int>>& grid, int n) {
+    vector<vector<bool>> visited(n, vector<bool>(n, false));
+    queue<pair<int,int>> q;
+    q.push({0,0});
+    visited[0][0] = true;
+
+    // Directions: Up, Down, Left, Right
+    int dx[] = {-1, 1, 0, 0};
+    int dy[] = {0, 0, -1, 1};
+
+    while(!q.empty()) {
+        auto [x,y] = q.front();
+        q.pop();
+
+        if(x == n-1 && y == n-1) return true; // reached exit
+
+        for(int k=0; k<4; k++) {
+            int nx = x + dx[k];
+            int ny = y + dy[k];
+            if(nx>=0 && ny>=0 && nx<n && ny<n && !visited[nx][ny] && grid[nx][ny]==0) {
+                visited[nx][ny] = true;
+                q.push({nx,ny});
+            }
+        }
+    }
+    return false;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t; 
+    cin >> t;
+    while(t--) {
+        int n; 
+        cin >> n;
+        vector<vector<int>> grid(n, vector<int>(n));
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<n; j++) {
+                cin >> grid[i][j];
+            }
+        }
+        cout << (canEscape(grid,n) ? "YES" : "NO") << "\n";
+    }
+    return 0;
+}
