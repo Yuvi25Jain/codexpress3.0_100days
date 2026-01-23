@@ -1,0 +1,125 @@
+# 🧩 DSA Revision: Villager Rescue (Lava Maze)
+
+## 📌 Problem in Simple Words
+You are given an `n × n` grid:
+- `1` → block with villagers (rescuable).
+- `2` → fire block (cannot step here).
+- `0` → empty path (safe to move).
+
+A rescue team can start from **any villager cell**. They can move **Up, Down, Left, Right** to rescue more villagers.  
+If they step onto a fire block, the path fails.  
+Find the **maximum number of villagers** that can be rescued by choosing the best starting point and path.
+
+---
+
+## 🏷️ DSA Pattern Category
+- **Graph Traversal (DFS/BFS on grid)**  
+- **Connected Components in Matrix**
+
+---
+
+## 🧠 How to Start Thinking (from scratch)
+1. Each villager cell belongs to a **connected safe region** (cells of `0` or `1` only).  
+2. Fire cells (`2`) act as **walls**.  
+3. For each unvisited villager cell, run BFS/DFS to explore its region.  
+4. Count villagers in that region.  
+5. Track the **maximum count** across all regions.
+
+---
+
+## 🔨 Brute Force Approach
+- Start BFS/DFS from every villager cell.  
+- Recompute counts each time.  
+- **Complexity:** `O(n^4)` worst case (repeated traversals).
+
+---
+
+## ⚡ Optimized Approach
+- Use a **visited[][]** array to avoid recomputation.  
+- For each unvisited villager cell, run BFS/DFS once to compute its component size.  
+- Update maximum.  
+- **Complexity:**  
+  - Time: `O(n^2)` (each cell visited once).  
+  - Space: `O(n^2)` (visited + queue).
+
+---
+
+## 🎯 Tricks & Tips
+- Treat fire (`2`) as walls.  
+- Count villagers only (`1`), but traverse through empty (`0`) as well.  
+- Always reset visited per test case.  
+- Whenever you see **grid + connected regions + max count** → think **DFS/BFS components**.
+
+---
+
+## ✅ Key Takeaway
+This is a **Graph Traversal pattern** problem.  
+Next time you see a grid with movement rules and max count, map it to **DFS/BFS connected components**.
+
+---
+
+## 💻 C++ Code (GitHub‑Ready)
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+vector<vector<int>> grid;
+vector<vector<bool>> visited;
+
+int dx[] = {-1, 1, 0, 0};
+int dy[] = {0, 0, -1, 1};
+
+int bfs(int i, int j) {
+    queue<pair<int,int>> q;
+    q.push({i,j});
+    visited[i][j] = true;
+    int countVillagers = 0;
+
+    while(!q.empty()) {
+        auto [x,y] = q.front();
+        q.pop();
+
+        if(grid[x][y] == 1) countVillagers++;
+
+        for(int k=0; k<4; k++) {
+            int nx = x + dx[k];
+            int ny = y + dy[k];
+            if(nx>=0 && ny>=0 && nx<n && ny<n && !visited[nx][ny] && grid[nx][ny]!=2) {
+                visited[nx][ny] = true;
+                q.push({nx,ny});
+            }
+        }
+    }
+    return countVillagers;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t; cin >> t;
+    while(t--) {
+        cin >> n;
+        grid.assign(n, vector<int>(n));
+        visited.assign(n, vector<bool>(n,false));
+
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<n; j++) {
+                cin >> grid[i][j];
+            }
+        }
+
+        int maxRescued = 0;
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<n; j++) {
+                if(grid[i][j] == 1 && !visited[i][j]) {
+                    maxRescued = max(maxRescued, bfs(i,j));
+                }
+            }
+        }
+        cout << maxRescued << "\n";
+    }
+    return 0;
+}
