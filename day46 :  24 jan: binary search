@@ -1,0 +1,87 @@
+# 🧩 DSA Revision: Scroll Search (Binary Search)
+
+## 📌 Problem in Simple Words
+You are given a sorted list of scroll IDs.  
+The village chief wants to find the position of a target scroll ID.  
+If found → return its **0‑based index**.  
+If not found → return `-1`.
+
+---
+
+## 🏷️ DSA Pattern Category
+- **Binary Search**
+- **Searching in Sorted Array**
+
+---
+
+## 🧠 How to Start Thinking (from scratch)
+1. The list is **sorted** → immediately think **Binary Search**.  
+2. Brute force would be linear scan (`O(n)`), but sorted order allows faster search.  
+3. Binary Search halves the search space each step → `O(log n)`.
+
+---
+
+## 🔨 Brute Force Approach
+- Traverse the array one by one.  
+- If element matches target → return index.  
+- Else return `-1`.  
+- **Complexity:**  
+  - Time: `O(n)`  
+  - Space: `O(1)`
+
+---
+
+## ⚡ Optimized Approach (Binary Search)
+- Use two pointers: `low = 0`, `high = n-1`.  
+- While `low <= high`:  
+  - Find `mid = (low+high)/2`.  
+  - If `scrolls[mid] == target` → return `mid`.  
+  - If `scrolls[mid] < target` → search right half.  
+  - Else → search left half.  
+- If not found → return `-1`.  
+- **Complexity:**  
+  - Time: `O(log n)`  
+  - Space: `O(1)`
+
+---
+
+## 🎯 Tricks & Tips
+- Always check **sorted array** → Binary Search is your friend.  
+- Watch out for **integer overflow** in `mid = (low+high)/2` (use `low + (high-low)/2`).  
+- If multiple occurrences exist → Binary Search can be modified to find first/last occurrence.  
+- For small constraints (`n ≤ 10`), linear search also works, but Binary Search is the optimal pattern.
+
+---
+
+## 💻 C++ Code (GitHub‑Ready)
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int binarySearch(vector<int>& arr, int target) {
+    int low = 0, high = arr.size() - 1;
+    while(low <= high) {
+        int mid = low + (high - low) / 2;
+        if(arr[mid] == target) return mid;
+        else if(arr[mid] < target) low = mid + 1;
+        else high = mid - 1;
+    }
+    return -1;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t; cin >> t;
+    while(t--) {
+        int n; cin >> n;
+        vector<int> scrolls(n);
+        for(int i=0; i<n; i++) cin >> scrolls[i];
+        int target; cin >> target;
+
+        cout << binarySearch(scrolls, target) << "\n";
+    }
+    return 0;
+}
