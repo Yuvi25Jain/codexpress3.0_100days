@@ -1,0 +1,102 @@
+# 🧩 DSA Revision: Auto-Crafter Timer (Minimum Time to Craft M Items)
+
+## 📌 Problem in Simple Words
+You have `n` Auto-Crafters:
+- `time[i]` = time taken by the i-th crafter to craft one item.
+- All crafters work **in parallel**.
+- You need at least `m` items.
+
+Find the **minimum time** required to craft at least `m` items.
+
+---
+
+## 🏷️ DSA Pattern Category
+- **Binary Search on Answer**
+- **Greedy + Simulation**
+
+---
+
+## 🧠 How to Start Thinking (from scratch)
+1. Each crafter produces items at a fixed rate.  
+   - In `T` minutes, crafter `i` produces `floor(T / time[i])` items.  
+2. Total items in `T` minutes = sum of all crafters’ outputs.  
+3. We need the **minimum T** such that total ≥ `m`.  
+4. This is a **monotonic condition**:  
+   - If `T` works, any larger time also works.  
+   - If `T` fails, any smaller time also fails.  
+   → Perfect for **Binary Search**.
+
+---
+
+## 🔨 Brute Force Approach
+- Start from time = 1, simulate until items ≥ m.  
+- **Complexity:** `O(m * n)` → impossible for large inputs.
+
+---
+
+## ⚡ Optimized Approach (Binary Search)
+- Search between `low = 1` and `high = min(time) * m` (worst case: fastest crafter makes all items).  
+- For each mid:  
+  - Compute total items = sum(`mid / time[i]`).  
+  - If total ≥ m → move left (try smaller time).  
+  - Else → move right (need more time).  
+- Return the smallest valid time.  
+- **Complexity:**  
+  - Time: `O(n log(max_time * m))`  
+  - Space: `O(1)`
+
+---
+
+## 🎯 Tricks & Tips
+- Always check monotonic property → Binary Search on Answer.  
+- Use `long long` (64-bit) to avoid overflow (`time[i]` and `m` can be up to 1e9).  
+- Upper bound = `min(time) * m`.  
+- This pattern appears in problems like **Minimum Time to Make M Bouquets**, **Factory Machines**, etc.
+
+---
+
+## 💻 C++ Code (GitHub‑Ready)
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long minTime(vector<long long>& time, long long m) {
+    long long low = 1;
+    long long high = *min_element(time.begin(), time.end()) * m;
+    long long ans = high;
+
+    while(low <= high) {
+        long long mid = low + (high - low) / 2;
+        long long items = 0;
+
+        for(long long t : time) {
+            items += mid / t;
+            if(items >= m) break; // optimization
+        }
+
+        if(items >= m) {
+            ans = mid;
+            high = mid - 1;
+        } else {
+            low = mid + 1;
+        }
+    }
+    return ans;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t; cin >> t;
+    while(t--) {
+        int n; cin >> n;
+        vector<long long> time(n);
+        for(int i=0; i<n; i++) cin >> time[i];
+        long long m; cin >> m;
+
+        cout << minTime(time, m) << "\n";
+    }
+    return 0;
+}
