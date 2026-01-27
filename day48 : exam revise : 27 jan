@@ -1,0 +1,107 @@
+# 🧩 DSA Revision: Block Compression Spell
+
+## 📌 Problem in Simple Words
+You are given an array `arr` of block strengths.  
+Compression level `x` works as:
+- If `arr[i] > x` → becomes `x`.  
+- Else → remains `arr[i]`.  
+
+Goal: Find `x` such that the **sum of compressed array** is closest to `target`.  
+If multiple `x` give same closeness → choose **smallest x**.
+
+---
+
+## 🏷️ DSA Pattern Category
+- **Binary Search on Answer**  
+- **Greedy + Simulation**
+
+---
+
+## 🧠 How to Start Thinking (from scratch)
+1. The compressed sum is **monotonic in x**:  
+   - Smaller `x` → smaller sum.  
+   - Larger `x` → larger sum.  
+2. We can binary search on `x` between `0` and `max(arr)`.  
+3. For each candidate `x`, compute compressed sum.  
+4. Track the best `x` with minimum difference to target.  
+5. Tie‑breaking: if equal difference, choose smaller `x`.
+
+---
+
+## 🔨 Brute Force Approach
+- Try all possible `x` from `0` to `max(arr)`.  
+- Compute compressed sum each time.  
+- **Complexity:** `O(n * max(arr))` → too slow.
+
+---
+
+## ⚡ Optimized Approach (Binary Search)
+- Search between `low = 0` and `high = max(arr)`.  
+- For each `mid`, compute compressed sum in `O(n)`.  
+- Adjust search space based on whether sum < target or > target.  
+- Track best answer.  
+- **Complexity:** `O(n log(max(arr)))`  
+- Works within constraints (`n ≤ 10^4`, `T ≤ 1000`).
+
+---
+
+## 🎯 Tricks & Tips
+- Always check monotonic property → Binary Search on Answer.  
+- Use `long long` to avoid overflow.  
+- Tie‑breaking rule: smallest `x` if multiple answers.  
+- This pattern is similar to **Cutting Trees**, **Minimize Difference problems**.
+
+---
+
+## 💻 C++ Code (GitHub‑Ready)
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long compressedSum(vector<int>& arr, int x) {
+    long long sum = 0;
+    for(int val : arr) {
+        sum += (val > x ? x : val);
+    }
+    return sum;
+}
+
+int findBestX(vector<int>& arr, long long target) {
+    int low = 0, high = *max_element(arr.begin(), arr.end());
+    int bestX = low;
+    long long bestDiff = LLONG_MAX;
+
+    while(low <= high) {
+        int mid = low + (high - low) / 2;
+        long long sum = compressedSum(arr, mid);
+        long long diff = llabs(sum - target);
+
+        if(diff < bestDiff || (diff == bestDiff && mid < bestX)) {
+            bestDiff = diff;
+            bestX = mid;
+        }
+
+        if(sum < target) {
+            low = mid + 1; // need bigger x to increase sum
+        } else {
+            high = mid - 1; // need smaller x to decrease sum
+        }
+    }
+    return bestX;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T; cin >> T;
+    while(T--) {
+        int n; long long target;
+        cin >> n >> target;
+        vector<int> arr(n);
+        for(int i=0; i<n; i++) cin >> arr[i];
+        cout << findBestX(arr, target) << "\n";
+    }
+    return 0;
+}
