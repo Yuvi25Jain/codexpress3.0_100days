@@ -1,0 +1,80 @@
+🧩 DSA Revision: Underground Tunnel Clearance
+
+📌 Problem in Simple Words
+You are given a sorted list of tunnel ceiling heights.  
+A build of height `build_height` needs to pass through.  
+Find the **smallest tunnel height ≥ build_height**.  
+If no tunnel fits → return `-1`.
+
+---
+
+🏷️ DSA Pattern Category
+- **Binary Search (Lower Bound)**  
+- **Searching in Sorted Array**
+
+---
+
+ 🧠 How to Start Thinking (from scratch)
+1. Array is sorted → immediately think **Binary Search**.  
+2. We need the **first element ≥ build_height**.  
+3. If all tunnels < build_height → return `-1`.  
+4. Otherwise → return that element.
+
+---
+
+🔨 Brute Force Approach
+- Traverse array linearly.  
+- First element ≥ build_height → return it.  
+- **Complexity:** `O(n)` per test case.  
+
+---
+
+⚡ Optimized Approach (Binary Search)
+- Use binary search to find **lower bound**.  
+- **Complexity:** `O(log n)` per test case.  
+- Works for large `n` (up to `10^5`).  
+
+---
+
+ 🎯 Tricks & Tips
+- Always check sorted array → Binary Search.  
+- Lower Bound = first index where `arr[i] ≥ target`.  
+- If index = `n` (out of bounds) → return `-1`.
+
+---
+
+ 💻 C++ Code (GitHub‑Ready)
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int findTunnel(vector<long long>& arr, long long build_height) {
+    int low = 0, high = arr.size() - 1;
+    int ans = -1;
+    while(low <= high) {
+        int mid = low + (high - low) / 2;
+        if(arr[mid] >= build_height) {
+            ans = arr[mid];
+            high = mid - 1; // look for smaller valid tunnel
+        } else {
+            low = mid + 1;
+        }
+    }
+    return ans;
+}
+
+int main() {
+   
+
+    int t; cin >> t;
+    while(t--) {
+        int n; cin >> n;
+        vector<long long> arr(n);
+        for(int i=0; i<n; i++) cin >> arr[i];
+        long long build_height; cin >> build_height;
+
+        cout << findTunnel(arr, build_height) << "\n";
+    }
+    return 0;
+}
