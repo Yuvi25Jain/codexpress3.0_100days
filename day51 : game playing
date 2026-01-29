@@ -1,0 +1,20 @@
+question : there are given n blocks given , and two players are playing the who who picks the last block will win . also a player can pick 1,2,3 max block in its turn
+
+note / oobservation from dry run of test cases that the n = 4 is always the loosing position for us. : solution 
+
+
+  #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+  
+    int T;
+    cin >> T;
+    while (T--) {
+        long long n;
+        cin >> n;
+        if (n % 4 == 0) cout << "No\n";
+        else cout << "Yes\n";
+    }
+    return 0;
+}
