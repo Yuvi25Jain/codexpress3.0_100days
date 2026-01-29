@@ -1,0 +1,87 @@
+
+---
+
+## DSA Pattern Recap
+- **Monotonic function + threshold search** → Binary Search on Answer.
+- Always check monotonicity before applying this pattern.
+
+---
+
+## Complexity
+- Each capped sum = `O(n)`.
+- Binary search runs `O(log(maxHeight))`.
+- Total = `O(n log(maxHeight))`.
+
+  ## approach : sabse pahele x ki range from 0 to max(arr)
+    then for each x check the each element of array if element is less than or equal to x then keep it as otherwise make it to exact half .
+    calculate the sum of the elemnt then , and return the corresponding valye of x which gives minimum results 
+---
+
+## Edge Cases
+1. Target smaller than all possible sums → answer = `0`.
+2. Target larger than total sum without cap → answer = `max(height)`.
+3. Exact match possible → return that `x`.
+4. Multiple `x` values equally close → return smallest `x`.
+5. Single building → works fine.
+6. All buildings already ≤ cap → return `max(height)`.
+
+---
+
+## Code (C++)
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long cappedSum(const vector<int>& heights, int cap) {
+    long long total = 0;
+    for (int h : heights) {
+        total += min(h, cap);
+    }
+    return total;
+}
+
+int findBestCap(const vector<int>& heights, long long target) {
+    int low = 0, high = *max_element(heights.begin(), heights.end());
+    int bestX = 0;
+    long long bestDiff = LLONG_MAX;
+
+    while (low <= high) {
+        int mid = (low + high) / 2;
+        long long total = cappedSum(heights, mid);
+        long long diff = llabs(total - target);
+
+        if (diff < bestDiff || (diff == bestDiff && mid < bestX)) {
+            bestDiff = diff;
+            bestX = mid;
+        }
+
+        if (total > target) {
+            high = mid - 1;
+        } else {
+            low = mid + 1;
+        }
+    }
+    return bestX;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+    while (T--) {
+        int n;
+        long long target;
+        cin >> n >> target;
+
+        vector<int> heights(n);
+        for (int i = 0; i < n; i++) {
+            cin >> heights[i];
+        }
+
+        cout << findBestCap(heights, target) << "\n";
+    }
+    return 0;
+}
