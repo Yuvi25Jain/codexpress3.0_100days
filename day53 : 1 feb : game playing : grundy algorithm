@@ -1,0 +1,25 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+/*
+   Game Analysis:
+   - Allowed moves: 1 or any prime power (p^x).
+   - Grundy analysis shows losing positions are multiples of 6.
+   - If N % 6 == 0 → Alex wins (Steve starts on losing position).
+   - Otherwise → Steve wins (he can move to a multiple of 6).
+*/
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+    while (T--) {
+        long long N;
+        cin >> N;
+        if (N % 6 == 0) cout << "Alex\n";
+        else cout << "Steve\n";
+    }
+    return 0;
+}
