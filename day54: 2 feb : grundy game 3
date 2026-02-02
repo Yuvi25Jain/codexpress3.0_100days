@@ -1,0 +1,46 @@
+
+    Badminton Shuttle Game
+    -----------------------
+    Lakshya Sen vs Kidambi Srikanth
+
+    Rules:
+    - Two reserves: Reserve 1 (X shuttlecocks), Reserve 2 (Y shuttlecocks).
+    - Lakshya starts.
+    - Lakshya's moves: (1,1) or (2,0).
+    - Kidambi's moves: (1,1) or (0,2).
+    - Player who cannot move loses.
+
+    Logic:
+    - Kidambi wins if:
+        * X == 0 (Lakshya cannot move)
+        * X == 1 and Y >= 2 (Lakshya forced into losing move)
+        * X == Y and X is even (equal even piles are losing for Lakshya)
+    - Otherwise, Lakshya wins.
+
+    Complexity:
+    - O(T) for T test cases.
+    - Handles constraints up to 1e9 easily.
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+    while (T--) {
+        long long X, Y;
+        cin >> X >> Y;
+
+        // Losing positions for Lakshya
+        if (X == 0 || (X == 1 && Y >= 2) || (X == Y && X % 2 == 0)) {
+            cout << "Kidambi\n";
+        } else {
+            cout << "Lakshya\n";
+        }
+    }
+    return 0;
+}
