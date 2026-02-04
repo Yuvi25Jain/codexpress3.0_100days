@@ -1,0 +1,44 @@
+pairing problem : we can process two items per step it they're different categories , otherwise only one.
+  optimal strategy to pair as much as possible until one cateogry dominates.
+
+
+similar to :  leetcode 2335 : minimum amt of time to fill cups
+
+important formula : sum+1/2 , why 2 ? bcuz we are taking 2 or pair at a time , if only sum then we need extra second where sum is odd... so best 
+  is this, (BALANCED)
+
+what if one of those dominates (10 medium , 0 slow , 0 fast) we can't pair them , we must charge them one by one. that;s why we also need maxval 
+  (largest pile)
+
+
+  Problem statement :
+
+three types of charges : fast , slow , medium 
+  each second : we can charge two vehicles of different types OR we can charge one vehicle of any type. 
+    given = amt(3) means slows , fast , medium
+
+output : find minimum number of seconds to charge all vehicles.
+
+Input 1: [1,4,2] (BALANCED)
+sum = 7
+maxVal = 4
+(sum+1)/2 = 4
+max(4,4) = 4 → ✅ matches sample output.
+
+Input 2: [0,0,5] (DOMINATE FAST)
+sum = 5
+maxVal = 5
+(sum+1)/2 = 3
+max(5,3) = 5 → must charge one by one → ✅ correct.
+
+  
+CODE: 
+int fillCups(vector<int>& amount) {
+        int sum = amount[0] + amount[1] + amount[2];
+        int maxval = max({amount[0], amount[1], amount[2]});  
+        int ans = max(maxval, (sum + 1) / 2);
+        return ans;
+    }
+
+
+
