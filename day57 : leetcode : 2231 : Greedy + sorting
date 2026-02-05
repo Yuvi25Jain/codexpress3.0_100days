@@ -1,0 +1,91 @@
+Greedy : we always want to place largest possible digit same parity in each position to maximijse the number.
+  Sorting : to make greedy choice possible , sort odd and even digits separately.
+
+
+  tc = o(1)
+
+  Problem 
+    we are given with an number , we can only swap even digit with even and odd with odd in order to get maximum possible number after swap
+
+  approach : there are two ways to do so one is string(digit appends) and another one is array (digit extraction)
+
+    step 1 : i/p = 3547 , so create vector of odd , even ... store each digit with the help of push_back into that.
+    step 2 : sort odd and even in descending order with the help of (odd.rbegin(), odd.rend) , (even.rbegin(), even.rend) 
+    step 3 : now again fetch each number from original array and swap with the sorted list of odd and even . (rebuild)
+
+
+
+    approach : same but in simple words
+    Approach:
+    - Extract odd digits and sort them in descending order.
+    - Extract even digits and sort them in descending order.
+    - Rebuild the number by replacing each digit with the next largest available digit of the same parity
+
+
+    int T; 
+    cin >> T;
+    while (T--) {
+    string num; 
+    cin >> num; 
+    vector<int> odd, even; 
+    for (char c : num) { 
+      int d = c - '0'; 
+      if (d % 2 == 0){
+        even.push_back(d); 
+      }
+        else{
+          odd.push_back(d);
+    }
+      sort(odd.rbegin(), odd.rend());
+      sort(even.rbegin(), even.rend()); 
+      int oi = 0, ei = 0; 
+      string result; 
+      for (char c : num)
+      { 
+        int d = c - '0'; 
+        if (d % 2 == 0) { 
+          result.push_back(char('0' + even[ei++]));
+        } else { 
+          result.push_back(char('0' + odd[oi++])); 
+        }
+      } 
+      cout << result << "\n"; 
+    } 
+    return 0; 
+  }
+
+
+why string solution is more convinent here ? we can directly access each digit with s[i] , easy to rebuild number by appending character , 
+                                             sort odd/even digits directly 
+
+
+
+alternative without string 
+
+int largestInteger(int num) {
+    vector<int> digits;
+    int temp = num;
+    while (temp > 0) {
+        digits.push_back(temp % 10);
+        temp /= 10;
+    }
+    reverse(digits.begin(), digits.end());
+
+    vector<int> odd, even;
+    for (int d : digits) {
+        if (d % 2 == 0) even.push_back(d);
+        else odd.push_back(d);
+    }
+
+    sort(odd.rbegin(), odd.rend());
+    sort(even.rbegin(), even.rend());
+
+    int oi = 0, ei = 0;
+    int result = 0;
+    for (int d : digits) {
+        result *= 10;
+        if (d % 2 == 0) result += even[ei++];
+        else result += odd[oi++];
+    }
+    return result;
+}
