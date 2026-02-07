@@ -1,0 +1,43 @@
+Problem : we have grass array with different height , in one turn we can cut smalllest non zero height from all uncut patches.
+      repeat until all patches are zero , output is number of turns
+
+  Complexity:
+    - O(N) per test case (using set).
+    - Handles up to N = 1e5 efficiently.
+
+int T;
+cin >> T; 
+while (T--) { 
+  int n; 
+  cin >> n; 
+  vector<int> nums(n); 
+  for (int i = 0; i < n; i++) 
+    cin >> nums[i]; 
+  unordered_set<int> distinct; 
+  for (int h : nums) { 
+    if (h > 0) 
+      distinct.insert(h); 
+  } 
+  cout << distinct.size() << "\n"; 
+}
+
+
+similar leetcode 1647
+
+  int minDeletions(string s) {
+        unordered_map<char,int> freq;
+        for(char c : s){
+            freq[c]++;
+        }
+        unordered_set<int> used ;
+        int deletion = 0 ;
+        for(auto [ch , f] : freq){
+            while(f>0 && used.count(f)){
+                f--;
+                deletion++;
+            }
+            if(f>0) used.insert(f);
+        }
+        return deletion;
+        
+    }
