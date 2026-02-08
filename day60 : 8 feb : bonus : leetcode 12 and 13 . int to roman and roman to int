@@ -1,0 +1,146 @@
+Problem Restatement ) leetcode 12)
+Convert an integer n (1 ≤ n ≤ 3999) into its Roman numeral representation using the standard rules:
+
+Symbols: I=1, V=5, X=10, L=50, C=100, D=500, M=1000.
+
+Use subtractive forms for 4, 9, 40, 90, 400, 900.
+
+Only I, X, C, M can repeat up to 3 times.
+
+🧠 Approach
+Prepare a list of Roman numeral values and symbols in descending order, including subtractive forms:
+
+Code
+{1000, "M"}, {900, "CM"}, {500, "D"}, {400, "CD"},
+{100, "C"}, {90, "XC"}, {50, "L"}, {40, "XL"},
+{10, "X"}, {9, "IX"}, {5, "V"}, {4, "IV"}, {1, "I"}
+For each value:
+
+While n >= value, append the symbol to result and subtract value from n.
+
+Continue until n = 0.
+
+🚀 GitHub‑Ready C++ Code
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+string intToRoman(int num) {
+    vector<pair<int,string>> roman = {
+        {1000,"M"}, {900,"CM"}, {500,"D"}, {400,"CD"},
+        {100,"C"}, {90,"XC"}, {50,"L"}, {40,"XL"},
+        {10,"X"}, {9,"IX"}, {5,"V"}, {4,"IV"}, {1,"I"}
+    };
+    
+    string result;
+    for (auto [val, sym] : roman) {
+        while (num >= val) {
+            result += sym;
+            num -= val;
+        }
+    }
+    return result;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+    while (T--) {
+        int n;
+        cin >> n;
+        cout << intToRoman(n) << "\n";
+    }
+    return 0;
+}
+✅ Dry Run
+Input: 3749
+
+3000 → MMM
+
+700 → DCC
+
+40 → XL
+
+9 → IX  
+Result = MMMDCCXLIX ✅
+
+
+  -------------------------------------------------
+
+Problem Restatement
+Input: Roman numeral string s (valid, length ≤ 15).
+
+Output: Integer value.
+
+Rules:
+
+Symbols: I=1, V=5, X=10, L=50, C=100, D=500, M=1000.
+
+Subtractive forms: IV=4, IX=9, XL=40, XC=90, CD=400, CM=900.
+
+Normally, values are added left to right, but if a smaller value precedes a larger one, subtract it.
+
+🧠 Approach
+Map each Roman symbol to its integer value.
+
+Traverse the string from left to right:
+
+If current value < next value → subtract it.
+
+Else → add it.
+
+Return the total.
+
+🚀 GitHub‑Ready C++ Code
+cpp
+/*
+    LeetCode 13: Roman to Integer
+    -----------------------------
+    Approach:
+    - Map each symbol to its value.
+    - Traverse string left to right.
+    - If current < next, subtract current.
+    - Else, add current.
+    - Return total.
+
+    Complexity:
+    - O(n) time, O(1) space.
+*/
+
+class Solution {
+public:
+    int romanToInt(string s) {
+        unordered_map<char,int> val = {
+            {'I',1}, {'V',5}, {'X',10}, {'L',50},
+            {'C',100}, {'D',500}, {'M',1000}
+        };
+        
+        int total = 0;
+        for (int i = 0; i < s.size(); i++) {
+            if (i+1 < s.size() && val[s[i]] < val[s[i+1]]) {
+                total -= val[s[i]];
+            } else {
+                total += val[s[i]];
+            }
+        }
+        return total;
+    }
+};
+✅ Dry Run
+Input: "MCMXCIV"
+M=1000 → add → total=1000
+
+C=100 < M=1000 → subtract → total=900
+
+M=1000 → add → total=1900
+
+X=10 < C=100 → subtract → total=1890
+
+C=100 → add → total=1990
+
+I=1 < V=5 → subtract → total=1989
+
+V=5 → add → total=1994 ✅
