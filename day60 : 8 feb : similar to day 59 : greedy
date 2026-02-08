@@ -1,0 +1,64 @@
+🔎 Problem Restatement
+You have an array nums of non‑negative integers.
+
+In one operation:
+
+Choose x ≤ smallest non‑zero element.
+
+Subtract x from every positive element.
+
+Goal: minimum operations to make all elements = 0.
+
+🧠 Key Insight
+Every operation corresponds to moving down to the next distinct positive height.
+
+Because you always subtract the smallest non‑zero value, you “jump” from one distinct level to the next.
+
+So the number of operations = count of distinct positive values in the array.
+
+🧩 Example Walkthrough
+Input: [1, 5, 0, 3, 5]
+Distinct positive values = {1,3,5}.
+
+Turn 1: subtract 1 → [0,4,0,2,4].
+
+Turn 2: subtract 2 → [0,2,0,0,2].
+
+Turn 3: subtract 2 → [0,0,0,0,0].
+
+Done in 3 turns. ✅
+
+Input: [0]
+Distinct positive values = {}.
+
+Already zero → 0 turns. ✅
+
+
+
+  int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+    while (T--) {
+        int n;
+        cin >> n;
+        vector<int> nums(n);
+        for (int i = 0; i < n; i++) cin >> nums[i];
+
+        unordered_set<int> distinct;
+        for (int h : nums) {
+            if (h > 0) distinct.insert(h);
+        }
+
+        cout << distinct.size() << "\n";
+    }
+    return 0;
+}
+✅ Why This Works
+Each distinct positive value requires one operation.
+
+Using a set ensures uniqueness.
+
+Efficient: O(N) per test case.
