@@ -1,0 +1,54 @@
+Problem :
+Given string s of uppercase letter. 
+  Operation : remove occurence of "AB" or "CD"
+    after remove , string concatenates  , may have new this
+      goal : find min possible length after apply operation 
+
+  Approach: o(N)
+    stack handle this ... why ? push char one by one , top of stack + current character form "ab" or "cd" pop instead push
+
+
+    Why stack ? rule of thumb
+
+      Remove adjacent pairs , collapse string after removal , check neighbours after deletion
+
+   int T; 
+cin >> T; 
+while (T--) { 
+  string s; 
+  cin >> s; 
+  stack<char> st; 
+  for (char c : s) { 
+    if (!st.empty()) { 
+      char top = st.top(); 
+      if ((top == 'A' && c == 'B') || (top == 'C' && c == 'D')) { 
+        st.pop(); // remove pair 
+        continue; 
+      } 
+    } 
+    st.push(c); 
+  } 
+cout << st.size() << "\n"; } 
+
+
+-------------------------- 
+
+  leetcode 1047 : remove duplicates
+ Problem Restatement
+Input: string s of lowercase letters.
+Operation: remove any pair of adjacent equal letters.
+Repeat until no more removals are possible.
+Output: the final string (guaranteed unique)
+
+
+  string removeDuplicates(string s) { 
+  string st; 
+  for (char c : s) { 
+    if (!st.empty() && st.back() == c) { 
+      st.pop_back(); // remove duplicate pair 
+    } else { 
+      st.push_back(c); 
+    } 
+  } 
+  return st;
+}
