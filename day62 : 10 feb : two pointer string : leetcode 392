@@ -1,0 +1,34 @@
+ps :
+
+two strings can be combined if one is a subsequence of the other. 
+  subsequence = we can delete some character (without reordering) to get smaller string.
+
+  how to recognise pattern
+
+Keywords : sequence , remove characters without changing order . this is two pointer 
+  traverse both string
+  try to match characters of the smaller string inside the large one
+  if you reach end of smaller string its a subsequence
+
+
+  why not dp ? check only subsequence existence not longest subsequence length.
+
+bool isSubsequence(const string &a, const string &b) { 
+  int i = 0, j = 0; 
+  while (i < a.size() && j < b.size()) {
+    if (a[i] == b[j]){
+      i++; 
+  }
+    j++;
+  } 
+  return i == a.size(); 
+}
+
+main(){
+  if (isSubsequence(s1, s2) || isSubsequence(s2, s1)) 
+    cout << "YES\n";
+  else cout << "NO\n";
+}
+}
+
+leetcode : 392 : direct match of is sequence . 
