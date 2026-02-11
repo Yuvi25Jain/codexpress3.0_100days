@@ -1,0 +1,22 @@
+day 63 problem is same algorithm . 
+
+  pattern detection in arrays , monotonic stack / greedy pattern. 
+
+
+dsa pattern : detect subsequence with a specific shape . (132 pattern)
+
+  MONOTONIC STACK + GREEDY ( maintain best candidate for the middle element) , subsequence pattern recoginition .
+
+
+  similar leetcode : 456 , 739 , 496 , 901.
+
+to detect this pattern
+
+    1. pattern phrase : find the subsequence of three numbers, i<j<k and inequality condition 
+      2. comparison : num[i]< num[k] < num[j]
+
+
+MONOTONIC STACK : next greater element
+                  next smaller element
+                  span until condition changes
+                  pattern de
