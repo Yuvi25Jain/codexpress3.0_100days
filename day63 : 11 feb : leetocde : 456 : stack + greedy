@@ -1,0 +1,31 @@
+#ps :
+A 132 pattern is subsequence of three numbers a[i] , a[j] , a[k] with i < j < k and a[i] < a[k] < a[j]
+  print yes if such pattern exist otherwise print no
+
+Insight = 
+  brute force : check all triples is too slow . 
+  Efficient : stack and backtracking
+
+  traverse from right to left 
+  maintain a stack of possible a[j] values (3)
+  track  maximum n[k] seen so far (2)
+  if at any point a[i] < a[k] we found 132 pattern 
+
+  Complex : o(n) = tc = sc
+
+  Dry run 
+  i/p = [3,1,4,2]
+  traverse right to left
+  stack [], third -infi
+  i = 3 , val = 2 , push , stack[2]
+    i = 2 val = 4 , 4>2 , pop , third = 2 , stack[], push 4
+      i = 1 , 1 < third => found pattern print YES
+
+  i/p 2 : [-1,3,2,0]
+
+traverse right to left
+  st[], third = -infi
+  i = 3 , val = 0 , push , stack[0]
+    i = 2 , val 2 , 2>0 , pop , third = 0 , st[], push 2
+      i = 1 val = 1 , 1>0 no 
+   
