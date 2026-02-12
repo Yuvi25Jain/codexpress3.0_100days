@@ -1,0 +1,102 @@
+# redundant brackets
+
+given with the exp with paranthesis , check if any pair of paranthesis is uneccesary(doesn't enclose an operator or meaningful sub expression)
+
+Example: a+(b)+c → the (b) is redundant → true.
+
+Example: (a+b) → parentheses are needed → false.
+
+If no parentheses at all → false.
+
+DSA pattern : STACK
+Keywords to spot: redundant brackets, unnecessary parentheses, balanced parentheses, expression parsin                                                                                     
+Approach :
+* traverse the string char by char
+* push char onto stack until hit a )
+  *when we see ) pop until (. 
+                            if no operator inside then redundant = true
+* continue until end
+* no redundancy : false
+
+EDGE CASE:
+1. no paranteses at all . false . 
+2. nest parentheses : ((a+b)) outer bracket are redundant inner ones not
+3. empty parantheses : () define redundant should return true. (fix : insidecount)
+
+
+leetcode closed 301 : remove invalid paranthesis , (related but not exact match) remove all adjacent duplicate in string ,
+                            gfg :redundant paranthesis , 
+                    
+                  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+bool hasRedundantBracket(string &exp) {
+    stack<char> st;
+    bool hasBracket = false;
+
+    for (char ch : exp) {
+        if (ch == ')') {
+            hasBracket = true;
+            bool oprfnd = false;
+            int insideCount = 0;
+
+            // Pop until '('
+            while (!st.empty() && st.top() != '(') {
+                char top = st.top();
+                if (top == '+' || top == '-' || top == '*' || top == '/') {
+                    oprfnd = true;
+                }
+                st.pop();
+                insideCount++;
+            }
+
+            if (!st.empty()) st.pop(); // pop '('
+
+            // Case 1: empty () → redundant
+            if (insideCount == 0) return true;
+
+            // Case 2: no operator inside → redundant
+            if (!oprfnd) return true;
+
+        } else {
+            st.push(ch);
+            if (ch == '(') hasBracket = true;
+        }
+    }
+
+    // Case 3: no brackets at all
+    if (!hasBracket) return false;
+
+    return false;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t;
+    cin >> t;
+    while (t--) {
+        string vrb;
+        cin >> vrb;
+        cout << (hasRedundantBracket(vrb) ? "true" : "false") << "\n";
+    }
+    return 0;
+}
