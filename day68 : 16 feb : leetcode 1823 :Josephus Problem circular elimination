@@ -1,0 +1,33 @@
+Rule / ps :
+n friends in a circle 
+  start at friend 1
+  count k friend clockwise (including 1st one , 1 based indexing)
+  the kth friend is eliminated
+  repeat until one remain .. winner
+
+Naive approach : simulate queue , remove k friend , work fine with small n , but not good for larger n. 
+
+Observation : exactly Josephus Problem
+  Recurrence relation J(n,k) = (J(n-1,k)+k) mod n => mod = remainder : #SILLY MISTAKE :YOU THINK IT WAS QUOTIENT BUT IT IS REMAINDER 
+
+base case J(1,k) = 0 : if there is only one person than the person at pos 0 i.e 0+1 = 1 is the winner
+
+KEYWORDS : circle , elimination , every kth , last survivor.
+
+dry run : n = 5 , k = 2
+
+base case : j(1,2) = 0 : if only 1 person , winner is pos 0 (person 1 in 1 indexed)
+  n = 2 , j(2,2) = (j(1,2)+2) % 2 = (0+2)%2 = 0 : person 1 win
+    n = 3 , j(3,2) = (j(2,2)+2) % 3 = (0+2)%3 = 2 : person 3 win
+      n = 4 , j(4,2) = (j(3,2)+2) % 4 = (2+2)%4 = 0 : person 1 win
+        n = 5 , j(5,2) = (j(4,2)+2) % 5 = (0+2)%5 = 2 : person 3 win
+
+
+  int josephus(int n, int k) { 
+          int res = 0; // base case J(1, k) = 0 
+          for (int i = 2; i <= n; i++) { 
+            res = (res + k) % i; 
+          } 
+          return res + 1; // convert to 1-indexed 
+        }
+      
