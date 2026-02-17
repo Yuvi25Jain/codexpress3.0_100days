@@ -1,0 +1,80 @@
+#ps :
+n friend sit in circle
+  start at friend 1
+  pass the pillow k time(counting starting friend)
+  the kth friend is eliminated
+  next round start immediately clockwise of eliminate friend
+  continue until one remain which is winner
+
+
+  Optimal approach: Josephus Recurrence
+      Recurrence relation : J(1,k) = 0 
+        J(n,k) = (J(n-1,k)+k) mod n
+
+  output final winner = J(n,k)+1 (convert to 1 index)
+
+  code :
+int josephus(int n, int k) { 
+  int res = 0; // base case J(1, k) = 0 
+  for (int i = 2; i <= n; i++) { 
+    res = (res + k) % i;
+  } 
+  return res + 1; // convert to 1-indexed
+}
+
+
+tc : o(n) , sc = o(1)
+
+Leetcode : 1823 : find winner of circular game , same rule , same recurrence.
+
+Asked in company : test recursion , iterative reasoning. , evaluates modular arithmetic intution, recognize 
+  classic dsa pattern.
+
+
+  🧠 Circular Queue vs Josephus Problem
+Circular Queue:
+
+A data structure where elements are stored in a fixed‑size array.
+
+Front and rear pointers wrap around when they reach the end.
+
+Operations: enqueue, dequeue, peek.
+
+Goal: manage data efficiently in a circular buffer.
+
+Josephus Problem:
+
+A mathematical elimination process in a circle.
+
+Every k‑th person is removed, and counting continues from the next.
+
+It’s not about managing a queue efficiently, but about finding the survivor’s position.
+
+The circle is a logical model, not a data structure requirement.
+
+🚀 Why They Feel Similar
+Both involve a circular structure (wrap‑around behavior).
+
+Both can be simulated using a queue (rotate until elimination).
+
+That’s why the brute force solution often uses a circular queue or vector erase.
+
+📌 Key Difference
+Circular queue is about storage and access.
+
+Josephus problem is about elimination pattern and survivor position.
+
+The optimized Josephus solution doesn’t need a queue at all — just modular arithmetic.
+
+✅ Analogy
+Think of it like this:
+
+Circular queue = a train platform where passengers board and leave in a cycle.
+
+Josephus problem = a game where every k‑th passenger is eliminated until one remains.
+
+Same circular motion, but different purpose.
+
+
+Theory : Josephus Problem : theoratical problem in maths and cs . model circular elimination game. 
+  finding the safe position in a circle when every kth person is eliminated.
