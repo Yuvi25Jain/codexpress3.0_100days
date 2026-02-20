@@ -1,0 +1,119 @@
+Theory :
+zigzag path in binary tree mean alternating direction
+  if left then next must be right
+  if right next must be left
+length is the numbers of edges (turns) ub alternating path.
+
+task : build bst from input , then compute longest zigzag path.
+
+
+  => DSA TOPIC:
+  binary tree / bst
+  dfs recursion with state tracking
+  pattern : dynamic recursion , carry state
+
+
+=> approach :
+1. build bst from inpyt(duplicate go left)
+  2. use dfs to explore all paths
+  track cyrrent direction left / right
+  if left then right
+  if right then left
+  reset length when direction brak
+
+3. keep global maximum.
+n = 10
+nums = [1, 10, 2, 9, 3, 8, 4, 7, 5, 6]
+
+          1
+         \
+         10
+        /
+       2
+        \
+         9
+        /
+       3
+        \
+         8
+        /
+       4
+        \
+         7
+        /
+       5
+        \
+         6
+
+  complexcity = insertion : o(n2) worst case , o(nlogn) average
+  dfs = o(n)
+  overall : o(n2) worst case
+
+
+Exact LeetCode Problem
+LeetCode 1372: Longest ZigZag Path in a Binary Tree  
+Same definition, same recursion pattern.
+
+
+✅ Why It’s Asked
+Tests recursion and DFS traversal.
+
+Checks if you can handle stateful recursion (direction + length).
+
+Evaluates ability to recognize classic tree problems disguised in story form.
+
+
+
+code:
+struct Node {
+    int val;
+    Node* left;
+    Node* right;
+    Node(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+Node* insert(Node* root, int val) {
+    if (!root) return new Node(val);
+    if (val <= root->val) root->left = insert(root->left, val);
+    else root->right = insert(root->right, val);
+    return root;
+}
+
+int maxZigZag = 0;
+
+void dfs(Node* root, bool goLeft, int length) {
+    if (!root) return;
+    maxZigZag = max(maxZigZag, length);
+    if (goLeft) {
+        dfs(root->left, false, length + 1); // go left → next must be right
+        dfs(root->right, true, 1);          // reset if direction breaks
+    } else {
+        dfs(root->right, true, length + 1); // go right → next must be left
+        dfs(root->left, false, 1);          // reset if direction breaks
+    }
+}
+
+int longestZigZag(Node* root) {
+    if (!root) return 0;
+    dfs(root->left, false, 1); // start left
+    dfs(root->right, true, 1); // start right
+    return maxZigZag;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T; cin >> T;
+    while (T--) {
+        int n; cin >> n;
+        Node* root = NULL;
+        for (int i = 0; i < n; i++) {
+            int val; cin >> val;
+            root = insert(root, val);
+        }
+        maxZigZag = 0; // reset global
+        cout << longestZigZag(root) << "\n";
+    }
+    return 0;
+}
