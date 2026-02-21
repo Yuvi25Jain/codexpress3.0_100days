@@ -1,0 +1,137 @@
+#ps :
+build a bst from the given sequence(duplicates go left)
+  an ancestor node above another in tree
+  a descendent is node below ancestor
+
+Rule: smaller → left subtree, larger → right subtree, duplicates → left.
+
+Once the BST is built, you must find the maximum absolute difference between any ancestor and descendant.
+task : find max abs difference ancestor - descendant.
+
+
+=> approach
+  build bst using insertion rules
+  for each node:
+  track min descendent value in substree
+  track max descedant value in its subtree
+  computer differ
+  node.val - mindescdant , node.val - maxdescedant
+  update global max
+
+return maxdifference
+
+------------------------------------------------------------------------------------------------------
+
+struct Node {
+    int val;
+    Node* left;
+    Node* right;
+    Node(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+Node* insert(Node* root, int val) {
+    if (!root) return new Node(val);
+    if (val <= root->val) root->left = insert(root->left, val); //duplicates
+    else root->right = insert(root->right, val);
+    return root;
+}
+
+int maxDiff;
+
+pair<int,int> dfs(Node* root) {
+    if (!root) return {INT_MAX, INT_MIN}; // empty subtree base case 1
+    if (!root->left && !root->right) return {root->val, root->val}; // leaf : base case 2
+
+    auto L = dfs(root->left); //recursion call 
+    auto R = dfs(root->right);
+
+    int mn = min({root->val, L.first, R.first});
+    int mx = max({root->val, L.second, R.second});
+
+    // check differences with descendants
+    if (L.first != INT_MAX || R.first != INT_MAX)
+        maxDiff = max(maxDiff, abs(root->val - mn));
+    if (L.second != INT_MIN || R.second != INT_MIN)
+        maxDiff = max(maxDiff, abs(root->val - mx));
+
+    return {mn, mx};
+}
+
+int main() {
+   
+
+    int T; cin >> T;
+    while (T--) {
+        int n; cin >> n;
+        Node* root = NULL;
+        for (int i = 0; i < n; i++) {
+            int val; cin >> val;
+            root = insert(root, val);
+        }
+        maxDiff = 0;
+        dfs(root);
+        cout << maxDiff << "\n";
+    }
+    return 0;
+}
+
+
+n = 9
+nums = [8, 3, 10, 1, 6, 14, 4, 7, 13]
+
+          8
+       / \
+      3   10
+     / \     \
+    1   6     14
+       / \    /
+      4   7  13
+
+  |8 - 1| = 7 ✅
+
+|3 - 7| = 4
+
+|10 - 13| = 3
+
+Max = 7.
+
+
+  => dsa pattern : topic : bst 
+    pattern : dfs recursion with min / max tracking
+      key idea : for each node compare with extreme descendant.
+
+
+Leetcode 1026 : max diff between node and ancestor.
+
+-----------------------------------------------------------------------------------------------------
+
+
+complexcty : iinsertion : o(n2)
+  worst case : sorted i/o , o(nlongn) average
+    dfs : o(n)
+
+
+----------------------------------------------------------------
+
+📌 Edge Cases
+Single node tree: no descendants → diff=0.
+
+All equal values: diff=0.
+
+Skewed tree (like linked list): diff = |root - deepest leaf|.
+
+
+---------------------------------------------------------------------------
+
+
+  auto is simply a type deduction tool.
+
+In your DFS, it deduces pair<int,int>
+
+
+  
+
+  
+
+
+
