@@ -1,0 +1,107 @@
+#ps :
+build a bst from sequence , 
+left whisper = left child of its parent
+  task : find the sum of all left whisper in the tree
+
+[5, 3, 7, 1, 4, 6, 10]
+        5
+       / \
+      3   7
+     / \  / \
+    1  4 6  10
+Left whispers = 1 (left child of 3), 6 (left child of 7).
+Sum = 1 + 6 = 7 ✅
+
+----------------------------------------------------------------------------------------------------------
+    Approach
+    build bst using insetion rules
+    traverse tree(dfs or recursion)
+    at each node:
+if it has a left child and that left child is leaf , add its value to sum
+  recurse left and right
+
+  return total sum
+  -----------------------------------------------------------------------------------------------------
+
+  code:
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+    int val;
+    Node* left;
+    Node* right;
+    Node(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+Node* insert(Node* root, int val) {
+    if (!root) return new Node(val);
+    if (val <= root->val) root->left = insert(root->left, val);
+    else root->right = insert(root->right, val);
+    return root;
+}
+
+int sumLeftWhispers(Node* root) {
+    if (!root) return 0;
+    int sum = 0;
+    // check left child
+    if (root->left) {
+        if (!root->left->left && !root->left->right) {
+            sum += root->left->val; // left leaf
+        }
+        sum += sumLeftWhispers(root->left);
+    }
+    // check right child
+    sum += sumLeftWhispers(root->right);
+    return sum;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T; cin >> T;
+    while (T--) {
+        int n; cin >> n;
+        Node* root = NULL;
+        for (int i = 0; i < n; i++) {
+            int val; cin >> val;
+            root = insert(root, val);
+        }
+        cout << sumLeftWhispers(root) << "\n";
+    }
+    return 0;
+}
+
+
+📌 Edge Cases
+Single node tree: no left whispers → sum = 0.
+
+All nodes only on right: no left whispers → sum = 0.
+
+All nodes only on left: only the deepest leaf counts if it’s a left child.
+
+Duplicates: go left, so they may become left whispers
+
+
+
+🌳 DSA Pattern
+Topic: Binary Trees / BSTs
+
+Pattern: Tree Traversal + Conditional Aggregation
+
+You traverse the tree (DFS recursion or BFS iteration).
+
+At each node, you apply a condition (is the left child a leaf?).
+
+If true → aggregate (add to sum).
+
+If false → recurse deeper.
+
+This is a classic recursion pattern:
+
+Divide & Conquer: break the tree into subtrees.
+
+Base Case: if node is null → return 0.
+
+Recursive Case: compute sum for left + right subtrees, plus condition check.
