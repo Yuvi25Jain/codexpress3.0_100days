@@ -1,0 +1,97 @@
+#ps :
+build bst from given villager id
+  each level of bst corresponds to a fllor in the tower
+  compute the sum of ids at each level
+  find the smallest level number that has maximum sum
+
+[1, 0, 7, 7, -8]
+
+
+  
+          1   (Level 1)            level 1 sum 1
+       / \
+      0   7   (Level 2)            level 2 sum 0+7= 7 (ANSWER)
+         / \
+        7  -8 (Level 3)            level 3 sum -1
+--------------------------------------------------------------------------------------------------------
+
+
+=> Approach
+  build bst using insertion
+  pperform level order traversal
+  use queue
+  track sum of nodes at each level 
+  store result in map// array 
+find maximum sum
+  return smallest level with max sum
+
+  
+  --------------------------------------------------------------------------------------------------
+
+-------------------------------------------STANDARD CREATE NODE AND INSERT VALUES IN BST----------------------
+struct Node {
+  int val; 
+  Node* left; 
+  Node* right; 
+  Node(int x) : val(x), left(NULL), right(NULL) {} 
+}; 
+
+Node* insert(Node* root, int val) { 
+  if (!root) return new Node(val); 
+  if (val <= root->val) root->left = insert(root->left, val); 
+  else root->right = insert(root->right, val); 
+  return root; 
+}
+
+--------------------------------------------------------------------------------------------------------------
+
+
+# standard for level order traversal i.e bfs
+
+  int level(node* root){
+  if(!root) return 0 ;
+  queue<node*>q;
+  q.push(root);
+  int level = 1 ;
+  int maxsum = INT_MIN;
+  int anslvl = 1 ;
+
+  while(!q.empty()){
+    int n = q.size();
+    int sum = 0 ;
+    for(int i = 0 ; i<n ; i++){
+      node* cur = q.front(); q.pop();
+      sum += cur->val;
+      if(cur->left) q.push(cur->left);
+      if(cur->right) q.push(cur->right);
+    }
+    if(sum>maxsum){
+      maxsum = sum ;
+      anslevel = level;
+    }
+    level++;
+  }
+  return anslvl;
+}
+
+
+---------------------------------------------------------------------------------------------------------------
+
+  DSA PATTERN : bst + level order traversal
+    Edge case : single node , level 1 answer 1
+                all negative id : max sum is least negative
+                  multiple level with same max sum 
+
+
+            -------------------------------
+
+
+  leetcode : 1161 : maximum level sum of binary tree
+    -------------------------------------------------------------------------------------------------
+
+
+why queue ? not other like stack linked list:
+
+queue fifo , bfs visit node level by level. when node process its children is back to queue.  this ensure all nodes at the current level are processed before moving to next level.
+    
+  
