@@ -1,0 +1,110 @@
+#ps:
+isConnected matrix = n*n
+  mat[i][j] = 1 means house i and house j directly allied
+  alliance transitive a <-> b , b <-> c , a <-> c ,
+great kingdon = one connected component in graph.
+  task : count number of connected components.
+
+n = 3
+isConnected =
+1 1 0
+1 1 0
+0 0 1
+House 1 ↔ House 2 (connected).
+House 3 is alone.
+So there are 2 Great Kingdoms.
+
+
+=> dsa pattern : grpah , connected component in undirected graph. 
+
+=> APPROACH:
+1. dfs recursion :
+    maintain visited array , for each unvisited node run dfs to mark all connected node
+      count how many times dfs is called , that;s the dfs.
+
+        why ? 
+        Uses recursion or a stack.
+
+Good when you just need to explore connected components.
+
+Simpler to implement in recursive form.
+
+But recursion depth can be a problem if n is very large (risk of stack overflow).
+-------------------------------------------------------------------------------------------------
+2. bfs queue:
+same idea but queue instrad of recursion .
+        ses a queue.
+
+Iterative, so no recursion depth issues.
+
+Often easier to visualize level‑by‑level exploration.
+
+Slightly more memory overhead (queue can hold many nodes at once).
+
+-------------------------------------------------------------------------------------------------------------
+=> dfs code
+
+  void dfs(int u , vector<vector<int>>& isconnect, vector<bool>& vst , int n ){
+
+  visited[u] = true;
+  for (int v = 0; v < n; v++) { 
+    if (isConnected[u][v] == 1 && !visited[v]) { 
+      dfs(v, isConnected, visited, n); 
+    } 
+  } 
+}
+-------------------------------------------------------------------------------------------------------
+
+  => bfs code
+
+ 
+
+int bfs(int start, vector<vector<int>>& isConnected, vector<bool>& visited, int n) {
+    queue<int> q;
+    q.push(start);
+    visited[start] = true;
+
+    while (!q.empty()) {
+        int u = q.front(); q.pop();
+        for (int v = 0; v < n; v++) {
+            if (isConnected[u][v] == 1 && !visited[v]) {
+                visited[v] = true;
+                q.push(v);
+            }
+        }
+    }
+    return 1; // one connected component found
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T; cin >> T;
+    while (T--) {
+        int n; cin >> n;
+        vector<vector<int>> isConnected(n, vector<int>(n));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                cin >> isConnected[i][j];
+            }
+        }
+
+        vector<bool> visited(n, false);
+        int kingdoms = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]) {
+                bfs(i, isConnected, visited, n);
+                kingdoms++;
+            }
+        }
+
+        cout << kingdoms << "\n";
+    }
+    return 0;
+}
+
+  
+  
+  
