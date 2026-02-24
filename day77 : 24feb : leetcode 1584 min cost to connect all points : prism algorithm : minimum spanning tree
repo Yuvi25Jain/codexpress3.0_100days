@@ -1,0 +1,113 @@
+🧠 Problem Restatement
+You have n crime scenes, each with coordinates (xi, yi).
+Effort to connect two scenes = Manhattan distance = 
+∣𝑥𝑖−𝑥𝑗|+∣𝑦𝑖−𝑦𝑗∣
+You need to connect all scenes with minimum total effort so that every scene is reachable.
+This is exactly the MST problem: connect all nodes with minimum edge cost.
+
+-------------------------------------------------------------------------------------------------------------
+
+🌳 DSA Pattern
+  Graph: Nodes = crime scenes, Edges = Manhattan distances.
+Pattern: Minimum Spanning Tree (MST).
+Algorithms:
+Prim’s Algorithm (efficient for dense graphs, avoids building all edges explicitly).
+Kruskal’s Algorithm (requires sorting all edges, but here edges = 
+𝑂(𝑛2), too heavy for n=1000).
+
+👉 Best choice: Prim’s Algorithm with a priority queue.
+
+---------------------------------------------------------------------------------------------------------
+🚀 Approach (Prim’s Algorithm)
+Start from any node.
+Use a min‑heap (priority queue) to pick the smallest edge connecting to an unvisited node.
+Add that node to the MST.
+Repeat until all nodes are connected.
+Sum of chosen edges = minimum effort.
+
+------------------------------------------------------------------------------------------------------------
+Code 
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        int n = points.size();
+        vector<bool> inMST(n, false);
+        int edgesUsed = 0;
+        int cost = 0;
+
+        // Min-heap storing {distance, node}
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+        pq.push({0, 0}); // start from node 0
+
+        while (edgesUsed < n) {
+            auto [dist, u] = pq.top(); pq.pop();
+            if (inMST[u]) continue; // skip if already in MST
+
+            inMST[u] = true;
+            cost += dist;
+            edgesUsed++;
+
+            // push all edges from u to other nodes
+            for (int v = 0; v < n; v++) {
+                if (!inMST[v]) {
+                    int d = abs(points[u][0] - points[v][0]) + abs(points[u][1] - points[v][1]);
+                    pq.push({d, v});
+                }
+            }
+        }
+        return cost;
+    }
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T; cin >> T;
+    while (T--) {
+        int n; cin >> n;
+        vector<vector<int>> points(n, vector<int>(2));
+        for (int i = 0; i < n; i++) {
+            cin >> points[i][0] >> points[i][1];
+        }
+        Solution sol;
+        cout << sol.minCostConnectPoints(points) << "\n";
+    }
+    return 0;
+}
+
+------------------------------------------------------------------------------------------------------------
+
+🔍 Dry Run (Sample Input)
+points = [[0,0],[2,2],[3,10],[5,2],[7,0]]
+Start at (0,0).
+Connect (2,2) → cost 4.
+Connect (5,2) → cost 3.
+Connect (7,0) → cost 4.
+Connect (3,10) → cost 9.
+
+Total = 20 ✅
+
+------------------------------------------------------------------------------------------------------------
+
+📌 Complexity
+Time: 
+𝑂(𝑛2log𝑛) because for each node we may push up to 𝑛 edges into the heap.
+
+Space: 
+𝑂(𝑛2) in worst case for heap storage, but practically 
+𝑂(𝑛) for visited + heap.
+Works fine for 𝑛≤1000
+
+-------------------------------------------------------------------------------------------------------------
+🎯 Key Takeaway
+This problem is a Minimum Spanning Tree with Manhattan distance.
+Use Prim’s Algorithm with a priority queue.
+Kruskal’s is possible but less efficient here.
+This is exactly LeetCode 1584: Min Cost to Connect All Points.
+
