@@ -1,0 +1,126 @@
+. Revision Hook (Quick Recall Strategy)
+When you see this type of question:
+
+Step 1: “Teams + Matches → Graph.”
+
+Step 2: “Groups = Connected Components.”
+
+Step 3: “Complete Group = Clique → all pairs connected.”
+
+Step 4: “Check edges count or adjacency matrix.”
+
+Step 5: “Count how many cliques.”
+
+👉 Brute force thinking:
+
+For each connected component, check all pairs.
+
+If every pair has an edge → it’s a clique.
+
+Count them.
+
+
+
+
+
+DSA PATTERN :
+GRAPHES
+  connected componet + clique 
+
+node = team , edge = matches.
+
+
+  clique : set of nodes where every node is directly connected to every other node. 
+
+
+    #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int m, n; 
+    cin >> m >> n;
+    vector<vector<int>> adj(n);
+    vector<vector<bool>> connected(n, vector<bool>(n, false));
+
+    for (int i = 0; i < m; i++) {
+        int u, v; cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+        connected[u][v] = connected[v][u] = true;
+    }
+
+    vector<bool> visited(n, false);
+    int completeGroups = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (!visited[i]) {
+            // BFS to find component
+            vector<int> comp;
+            queue<int> q;
+            q.push(i);
+            visited[i] = true;
+
+            while (!q.empty()) {
+                int u = q.front(); q.pop();
+                comp.push_back(u);
+                for (int v : adj[u]) {
+                    if (!visited[v]) {
+                        visited[v] = true;
+                        q.push(v);
+                    }
+                }
+            }
+
+            // Check if component is complete
+            bool isComplete = true;
+            int k = comp.size();
+            for (int x = 0; x < k; x++) {
+                for (int y = x+1; y < k; y++) {
+                    if (!connected[comp[x]][comp[y]]) {
+                        isComplete = false;
+                        break;
+                    }
+                }
+                if (!isComplete) break;
+            }
+            if (isComplete) completeGroups++;
+        }
+    }
+
+    cout << completeGroups << "\n";
+    return 0;
+}
+-------------------------------------------------------------------------------------------------------
+
+
+
+  Complexity
+Time: 
+𝑂
+(
+𝑛
+2
+)
+ worst case (checking completeness of each component).
+
+Space: 
+𝑂
+(
+𝑛
+2
+)
+ for adjacency matrix + 
+𝑂
+(
+𝑛
+)
+ for visited.
+
+Works fine for 
+𝑛
+≤
+50
+.
