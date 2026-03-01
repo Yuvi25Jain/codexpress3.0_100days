@@ -1,0 +1,68 @@
+#revision hook : during revision
+  spot pattern : here duplicates must be pushed forward.
+    Approach : sort array -> greedy fix duplicate -> count moves.
+      formula : nums[i] <= prev then move += (prev +1 - nums[i]) and set nums[i] = prev + 1
+
+  memory trick = sort then push duplicate forward until strictly increasing.
+
+
+  #dsa concept and pattern
+
+  concept : greedy + sprting
+    pattern : array transformation to satisfy unique. 
+
+
+  int minIncrementForUnique(vector<int>& nums) {
+    sort(nums.begin(), nums.end());
+    long long moves = 0;
+    int prev = -1;
+
+    for (int i = 0; i < nums.size(); i++) {
+        if (nums[i] <= prev) {
+            // Need to increment current number to be greater than prev
+            moves += (prev + 1 - nums[i]);
+            nums[i] = prev + 1;
+        }
+        prev = nums[i];
+    }
+
+    return (int)moves;
+}
+
+🔍 Explanation
+  Sort the array → duplicates will be adjacent.
+Track prev → the last unique number we’ve fixed.
+For each number:
+If nums[i] <= prev, we must increment it to prev+1.
+Add the difference to moves.
+Update nums[i].
+Return total moves.
+
+
+📌 Complexity
+Time: 
+𝑂(𝑛log𝑛) due to sorting.
+
+Space: 𝑂(1)
+ extra (in‑place).
+
+Works fine for 𝑛≤105
+
+
+nums = [3, 2, 1, 2, 1, 7]
+Sorted = [1, 1, 2, 2, 3, 7]
+
+Step 1: prev=-1
+nums[0]=1 → ok → prev=1
+nums[1]=1 → <= prev → increment to 2 → moves+=1 → prev=2
+nums[2]=2 → <= prev → increment to 3 → moves+=1 → prev=3
+nums[3]=2 → <= prev → increment to 4 → moves+=2 → prev=4
+nums[4]=3 → <= prev → increment to 5 → moves+=2 → prev=5
+nums[5]=7 → > prev → ok → prev=7
+
+Total moves = 6 ✅
+
+  
+
+
+
