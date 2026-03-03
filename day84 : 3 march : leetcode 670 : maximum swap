@@ -1,0 +1,90 @@
+# ps :
+given an number (string) , we can swap two digit at most once , goal maximise the number's value , if the number is already maximam no swap is needed.
+
+-----------------------------------------------------------------------------------------------------
+#approach: (greedy)
+
+1. convert number into a string/array of digit.
+  2. for each digit(left to right):
+  find the largest possible digit to the right that can replace it.
+  if such digit exist , swap them and stop(since only one swap allowed)
+
+3. if no beneficial swap return the original number.
+
+---------------------------------------------------------------------------------------------------
+
+  #code :
+
+  #include <bits/stdc++.h>
+using namespace std;
+
+int maximizeToken(int num) {
+    string s = to_string(num);
+    int n = s.size();
+
+    // Record last occurrence of each digit
+    vector<int> last(10, -1);
+    for (int i = 0; i < n; i++) {
+        last[s[i] - '0'] = i;
+    }
+
+    // Try to swap
+    for (int i = 0; i < n; i++) {
+        int curr = s[i] - '0';
+        // Look for a larger digit to the right
+        for (int d = 9; d > curr; d--) {
+            if (last[d] > i) {
+                swap(s[i], s[last[d]]);
+                return stoi(s);
+            }
+        }
+    }
+
+    return num; // already maximal
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T; 
+    cin >> T;
+    while (T--) {
+        int tokenNumber; 
+        cin >> tokenNumber;
+        cout << maximizeToken(tokenNumber) << "\n";
+    }
+
+    return 0;
+}
+--------------------------------------------------------------------------------------------------
+
+#dry run :
+
+Input: 2736
+Digits: [2,7,3,6]
+At index 0 (digit 2), check right side → largest digit is 7 at index 1.
+Swap → [7,2,3,6] → 7236 ✅
+
+  
+Input: 9973
+Digits: [9,9,7,3]
+No larger digit exists to the right for any position.
+Return original → 9973 ✅
+
+------------------------------------------------------------------------------------------------------
+
+
+🎯 Revision Hook
+When you see:
+
+“Swap two digits at most once to maximize number” → Greedy digit swap.
+
+Track last occurrence of each digit.
+
+From left to right, swap with the largest possible digit to the right.
+
+Stop after one swap.
+
+👉 Memory trick:
+“Scan left, swap with farthest bigger digit to the right.”
