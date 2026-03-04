@@ -1,0 +1,127 @@
+leetcode 127 word ladder
+
+🔑 Problem Restatement
+Start with beginWord.
+Transform it into endWord.
+Each step changes exactly one letter.
+Every intermediate word must be in the approved list.
+Find the shortest transformation sequence length.
+If impossible, return 0.
+
+🧩 DSA Concept & Pattern
+Concept: Graph shortest path.
+Pattern: BFS (Breadth‑First Search).
+Each word = node.
+Edge exists if two words differ by exactly one letter.
+BFS ensures shortest path.
+
+#c++ code
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+    unordered_set<string> dict(wordList.begin(), wordList.end());
+    if (!dict.count(endWord)) return 0; // endWord must be in list
+
+    queue<pair<string,int>> q;
+    q.push({beginWord, 1});
+
+    while (!q.empty()) {
+        auto [word, steps] = q.front(); q.pop();
+        if (word == endWord) return steps;
+
+        for (int i = 0; i < word.size(); i++) {
+            string temp = word;
+            for (char c = 'a'; c <= 'z'; c++) {
+                temp[i] = c;
+                if (dict.count(temp)) {
+                    q.push({temp, steps+1});
+                    dict.erase(temp); // avoid revisiting
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T; cin >> T;
+    while (T--) {
+        string beginWord, endWord;
+        cin >> beginWord >> endWord;
+        int n; cin >> n;
+        vector<string> wordList(n);
+        for (int i = 0; i < n; i++) cin >> wordList[i];
+        cout << ladderLength(beginWord, endWord, wordList) << "\n";
+    }
+    return 0;
+}
+
+
+----------------------------------------------------------------------------------------------------
+
+🧮 Dry Run Example
+Input:
+
+Code
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log","cog"]
+Start: "hit"
+
+Neighbors: "hot" (differs by 1 letter).
+
+From "hot" → "dot", "lot".
+
+From "dot" → "dog".
+
+From "dog" → "cog".
+
+Sequence: hit → hot → dot → dog → cog.
+
+Steps = 5 ✅
+
+-----------------------------------------------------------------------------------------------------
+
+🎯 Revision Hook
+When you see:
+
+“Transform word by changing one letter, shortest path” → BFS Word Ladder.
+
+Build graph implicitly by generating neighbors.
+
+Use queue for BFS.
+
+Erase visited words from dictionary to avoid cycles.
+
+👉 Memory trick:
+“Word Ladder = BFS on dictionary neighbors.”
+
+------------------------------------------------------------------------------------------------------
+
+How to Think About It
+Each word is like a node in a graph.
+An edge exists between two words if they differ by exactly one letter.
+The problem becomes: find the shortest path from beginWord to endWord in this graph.
+Shortest path → Breadth‑First Search (BFS).
+
+--------------------------------------------------------------------------------------------------
+
+Approach
+Put all approved words into a set (dict) for O(1) lookup.
+If endWord is not in the set → return 0 immediately.
+Use a queue for BFS: start with (beginWord, 1).
+For each word:
+Try changing each letter to 'a'..'z'.
+If the new word is in the set → push it into the queue with steps+1.
+Remove it from the set (to avoid revisiting).
+If we reach endWord, return the number of steps.
+If BFS ends without finding endWord, return 0.
+
+
+
+
