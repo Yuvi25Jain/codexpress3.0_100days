@@ -1,0 +1,198 @@
+🔑 Problem Restatement
+You’re given a binary tree.
+
+Each node has a treasure value.
+
+You need to check if there exists a root‑to‑leaf path such that the sum of values along the path equals targetSum.
+
+A leaf = node with no children.
+
+Return true if such a path exists, otherwise false.
+
+🧩 DSA Concept & Pattern
+Concept: Tree traversal with cumulative sum.
+
+Pattern: DFS recursion (Depth‑First Search).
+
+Why DFS? Because you need to explore all root‑to‑leaf paths.
+
+At each node, subtract its value from the target.
+
+If you reach a leaf and the remaining target = 0 → success.
+
+👉 Memory trick:
+“Path Sum = DFS down the tree, subtracting target.”
+
+✅ Approach
+If the tree is empty → return false.
+
+Start DFS from the root with targetSum.
+
+At each node:
+
+Subtract node->val from targetSum.
+
+If it’s a leaf and targetSum == 0 → return true.
+
+Otherwise, recurse left and right.
+
+If any path returns true, the answer is true.
+
+If none do, return false.
+
+📌 C++ Code (Core Logic)
+cpp
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+class Solution {
+public:
+    bool hasPathSum(TreeNode* root, int targetSum) {
+        if (!root) return false;
+        // If leaf node
+        if (!root->left && !root->right) {
+            return targetSum == root->val;
+        }
+        // Recurse left or right
+        return hasPathSum(root->left, targetSum - root->val) ||
+               hasPathSum(root->right, targetSum - root->val);
+    }
+};
+🧮 Dry Run Example
+Tree (level order):
+
+Code
+5 4 8 11 null 13 4 7 2 null null null 1
+Target = 22
+
+Path: 5 → 4 → 11 → 2  
+Sum = 22 → return true.
+
+🎯 Revision Hook
+When revising:
+
+“Root‑to‑leaf path sum check” → DFS recursion.
+
+Subtract node value from target at each step.
+
+Success if leaf and target == 0.
+
+👉 Memory trick:
+“Path Sum = subtract as you go, check at leaf.”
+
+⚖️ Related LeetCode Problems
+LeetCode 112 – Path Sum (this exact problem).
+
+LeetCode 113 – Path Sum II (return all paths).
+
+LeetCode 437 – Path Sum III (count paths anywhere in tree).
+
+Yuvi, would you like me to also prepare a step‑by‑step DFS trace table for the sample input (target = 22) so you can visualize how the recursion subtracts values and finds the successful path?
+
+give me one shot full code... including main functoin too
+Got it Yuvi 👌 — here’s a one‑shot full C++ solution for the Treasure Hunt in a Forest (Path Sum) problem, including the main function, tree construction from level‑order input, and the DFS logic.
+
+✅ Complete C++ Code
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// Definition for a binary tree node
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+// DFS function to check path sum
+bool hasPathSum(TreeNode* root, int targetSum) {
+    if (!root) return false;
+    // If leaf node
+    if (!root->left && !root->right) {
+        return targetSum == root->val;
+    }
+    // Recurse left or right
+    return hasPathSum(root->left, targetSum - root->val) ||
+           hasPathSum(root->right, targetSum - root->val);
+}
+
+// Build tree from level-order input (with "null" as absent child)
+TreeNode* buildTree(vector<string>& nodes) {
+    if (nodes.empty() || nodes[0] == "null") return nullptr;
+
+    TreeNode* root = new TreeNode(stoi(nodes[0]));
+    queue<TreeNode*> q;
+    q.push(root);
+    int i = 1;
+
+    while (!q.empty() && i < nodes.size()) {
+        TreeNode* curr = q.front(); q.pop();
+
+        // Left child
+        if (i < nodes.size() && nodes[i] != "null") {
+            curr->left = new TreeNode(stoi(nodes[i]));
+            q.push(curr->left);
+        }
+        i++;
+
+        // Right child
+        if (i < nodes.size() && nodes[i] != "null") {
+            curr->right = new TreeNode(stoi(nodes[i]));
+            q.push(curr->right);
+        }
+        i++;
+    }
+    return root;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t; 
+    cin >> t;
+    while (t--) {
+        int n; 
+        cin >> n;
+        vector<string> nodes(n);
+        for (int i = 0; i < n; i++) {
+            cin >> nodes[i];
+        }
+        int targetSum; 
+        cin >> targetSum;
+
+        TreeNode* root = buildTree(nodes);
+        cout << (hasPathSum(root, targetSum) ? "true" : "false") << "\n";
+    }
+    return 0;
+}
+🧮 How It Works
+Input parsing: Reads number of test cases, then each tree in level‑order with "null" for missing children.
+
+Tree building: Uses a queue to construct the binary tree level by level.
+
+DFS check: At each node, subtract its value from targetSum.
+
+If at a leaf and remaining sum = 0 → return true.
+
+Otherwise recurse left and right.
+
+Output: Prints "true" or "false" for each test case.
+
+🎯 Sample Run
+Input:
+
+Code
+1
+5
+5 4 8 11 null 13 4 7 2 null null null 1
+22
+Output:
+
+Code
+true
