@@ -1,0 +1,114 @@
+#ps :
+a binary tree is symmetric id its left subtree is a mirror reflection of its right subtree
+  we need to check whether the given tree is symmetric.
+
+  input is given in level order with null for missing nodes
+
+🧩 DSA Pattern
+Concept: Tree traversal.
+Pattern: Recursion (DFS) or Queue (BFS).
+Recursive check:
+Two trees are mirrors if:
+Their root values are equal.
+Left subtree of one is mirror of right subtree of the other.
+Right subtree of one is mirror of left subtree of the other.
+
+👉 Memory trick:
+“Symmetric Tree = compare left vs right in mirror fashion.”
+
+--------------------------------------------------------------------------------------------------
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Definition for a binary tree node
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+// Recursive helper to check mirror symmetry
+bool isMirror(TreeNode* t1, TreeNode* t2) {
+    if (!t1 && !t2) return true;
+    if (!t1 || !t2) return false;
+    return (t1->val == t2->val) &&
+           isMirror(t1->left, t2->right) &&
+           isMirror(t1->right, t2->left);
+}
+
+// Main function to check symmetry
+bool isSymmetric(TreeNode* root) {
+    if (!root) return true;
+    return isMirror(root->left, root->right);
+}
+
+// Build tree from level-order input
+TreeNode* buildTree(vector<string>& nodes) {
+    if (nodes.empty() || nodes[0] == "null") return nullptr;
+
+    TreeNode* root = new TreeNode(stoi(nodes[0]));
+    queue<TreeNode*> q;
+    q.push(root);
+    int i = 1;
+
+    while (!q.empty() && i < nodes.size()) {
+        TreeNode* curr = q.front(); q.pop();
+
+        // Left child
+        if (i < nodes.size() && nodes[i] != "null") {
+            curr->left = new TreeNode(stoi(nodes[i]));
+            q.push(curr->left);
+        }
+        i++;
+
+        // Right child
+        if (i < nodes.size() && nodes[i] != "null") {
+            curr->right = new TreeNode(stoi(nodes[i]));
+            q.push(curr->right);
+        }
+        i++;
+    }
+    return root;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<string> nodes(n);
+        for (int i = 0; i < n; i++) {
+            cin >> nodes[i];
+        }
+
+        TreeNode* root = buildTree(nodes);
+        cout << (isSymmetric(root) ? "true" : "false") << "\n";
+    }
+    return 0;
+}
+
+---------------------------------------------------------------------------------------------------------
+
+1
+7
+1 2 2 3 4 4 3
+
+
+         1
+     /   \
+    2     2
+   / \   / \
+  3  4  4  3
+---------------------------------------------------------------------------------------------------------
+  
+#doubts
+
+1. TreeNode(int x) : val(x), left(NULL), right(NULL) {} :
+2. 
+
