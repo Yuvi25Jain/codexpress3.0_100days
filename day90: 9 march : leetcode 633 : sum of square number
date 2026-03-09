@@ -1,0 +1,214 @@
+🔑 Intuition
+We need to check if:
+
+𝑎
+2
++
+𝑏
+2
+=
+𝑐
+for some integers 
+𝑎
+,
+𝑏
+≥
+0
+.
+
+If 
+𝑐
+<
+0
+, impossible.
+
+If 
+𝑐
+=
+0
+, then 
+𝑎
+=
+𝑏
+=
+0
+ works → "yes".
+
+Otherwise, we try possible values of 
+𝑎
+ up to 
+𝑐
+.
+
+For each 
+𝑎
+, compute 
+𝑏
+2
+=
+𝑐
+−
+𝑎
+2
+.
+
+If 
+𝑏
+2
+ is a perfect square, then answer is "yes".
+
+If no such pair exists, answer is "no".
+
+👉 Memory hook:
+“Check squares up to √c, see if remainder is square.”
+
+✅ Full C++ Code
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+bool isPerfectSquare(long long x) {
+    long long r = sqrt(x);
+    return r * r == x;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T; 
+    cin >> T;
+    while (T--) {
+        long long c; 
+        cin >> c;
+        bool ok = false;
+
+        for (long long a = 0; a * a <= c; a++) {
+            long long b2 = c - a * a;
+            if (isPerfectSquare(b2)) {
+                ok = true;
+                break;
+            }
+        }
+
+        cout << (ok ? "yes" : "no") << "\n";
+    }
+    return 0;
+}
+🧮 Dry Run
+Input:
+
+Code
+1
+5
+Try a=0 → b²=5 → not square.
+
+Try a=1 → b²=4 → b=2 → works.
+
+Output: "yes" ✅
+
+Input:
+
+Code
+1
+3
+Try a=0 → b²=3 → not square.
+
+Try a=1 → b²=2 → not square.
+
+Try a=√3 → stop.
+
+Output: "no" ✅
+
+🎯 Revision Hook
+When revising:
+
+“Sum of squares check” → loop a up to √c, check if remainder is square.
+
+This is exactly LeetCode 633 – Sum of Square Numbers.
+
+Yuvi, would you like me to also prepare a step‑by‑step table for input c=50 showing each a, the computed b², and whether it’s a perfect square, so you can visualize how the algorithm finds a=1, b=7?
+
+similar leetcode
+Yuvi 👌 — the Magical Number Check problem you’re solving on HackerRank is the same as LeetCode 633 – Sum of Square Numbers.
+
+🔑 Exact LeetCode Problem
+LeetCode 633 – Sum of Square Numbers
+
+Statement: Given a non‑negative integer c, determine whether there exist two integers a and b such that:
+
+𝑎
+2
++
+𝑏
+2
+=
+𝑐
+Constraints: 
+0
+≤
+𝑐
+≤
+2
+31
+−
+1
+
+Output: Return true if such integers exist, otherwise false.
+
+📌 Example
+Input:
+
+Code
+c = 5
+Output:
+
+Code
+true
+Explanation: 
+1
+2
++
+2
+2
+=
+5
+.
+
+Input:
+
+Code
+c = 3
+Output:
+
+Code
+false
+Explanation: No integers satisfy 
+𝑎
+2
++
+𝑏
+2
+=
+3
+.
+
+✅ Accepted LeetCode Solution (C++)
+cpp
+class Solution {
+public:
+    bool judgeSquareSum(int c) {
+        for (long long a = 0; a * a <= c; a++) {
+            long long b2 = c - a * a;
+            long long b = sqrt(b2);
+            if (b * b == b2) return true;
+        }
+        return false;
+    }
+};
+🎯 Why It Matches HackerRank
+HackerRank’s Day 90 – Magical Number Check asks you to print "yes" or "no" for each test case.
+
+LeetCode’s 633 – Sum of Square Numbers asks you to return true or false.
+
+Same logic, same constraints, same solution pattern.
