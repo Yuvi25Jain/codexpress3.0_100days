@@ -1,0 +1,289 @@
+🔑 DSA Concept / Pattern
+Number Representation + Bit Manipulation
+
+You’re essentially checking if:
+
+𝑛
+𝑢
+𝑚
+1
+=
+∑
+(
+2
+𝑖
+)
++
+𝑘
+⋅
+𝑛
+𝑢
+𝑚
+2
+for some number of spells 
+𝑘
+.
+
+Rearranged:
+
+𝑛
+𝑢
+𝑚
+1
+−
+𝑘
+⋅
+𝑛
+𝑢
+𝑚
+2
+=
+sum of exactly k powers of two
+Core Ideas:
+
+Binary Representation / Popcount
+
+Any integer can be expressed as a sum of powers of two (its binary form).
+
+The number of set bits = minimum number of powers of two needed.
+
+If we need exactly 
+𝑘
+ terms, then popcount(rem) ≤ k and rem ≥ k.
+
+Greedy / Iterative Search over k
+
+Try all possible spell counts 
+𝑘
+ (up to 60, since 
+2
+60
+ is huge).
+
+For each, check if the remainder fits the binary constraints.
+
+Pattern Family:
+
+Mathematical Simulation + Bit Tricks
+
+Similar to problems like:
+
+LeetCode 1780 – Sum of Powers of Three (representation in exponential terms).
+
+LeetCode 231 – Power of Two (checking binary structure).
+
+LeetCode 633 – Sum of Square Numbers (representation check with constraints).
+
+🎯 Intuition Hook
+Think of it like:
+
+Each spell contributes one power of two + num2.
+
+After subtracting 
+𝑘
+⋅
+𝑛
+𝑢
+𝑚
+2
+, the leftover must be split into exactly 
+𝑘
+ powers of two.
+
+That’s why popcount and remainder ≥ k are the key checks.
+
+👉 Memory trick:
+“Subtract k·num2 → remainder must fit into k powers of two.”
+
+
+🔑 Problem Restatement
+We want to vanish num1 using spells of the form:
+
+spell
+(
+𝑖
+)
+=
+2
+𝑖
++
+𝑛
+𝑢
+𝑚
+2
+,
+𝑖
+∈
+[
+0
+,
+60
+]
+Each spell subtracts this value from num1.
+Goal: make num1 → 0 with minimum spells, or print -1 if impossible.
+
+🧩 Intuition
+Rearrange the equation  
+Suppose we cast k spells with chosen powers 
+𝑖
+1
+,
+𝑖
+2
+,
+…
+,
+𝑖
+𝑘
+.
+Then:
+
+𝑛
+𝑢
+𝑚
+1
+=
+∑
+𝑗
+=
+1
+𝑘
+(
+2
+𝑖
+𝑗
++
+𝑛
+𝑢
+𝑚
+2
+)
+=
+(
+∑
+𝑗
+=
+1
+𝑘
+2
+𝑖
+𝑗
+)
++
+𝑘
+⋅
+𝑛
+𝑢
+𝑚
+2
+So the condition is:
+
+𝑛
+𝑢
+𝑚
+1
+−
+𝑘
+⋅
+𝑛
+𝑢
+𝑚
+2
+=
+∑
+𝑗
+=
+1
+𝑘
+2
+𝑖
+𝑗
+That means:
+
+After subtracting 
+𝑘
+⋅
+𝑛
+𝑢
+𝑚
+2
+, the remainder must be representable as a sum of exactly k powers of two.
+
+Key observation
+
+Any integer can be represented as a sum of powers of two (binary representation).
+
+But we need exactly k terms.
+
+That means:
+
+The remainder must be ≥ k (since each term ≥ 1).
+
+And the number of set bits in the remainder ≤ k (because we can split powers of two further into smaller ones).
+
+Algorithm
+
+Try all possible values of k (number of spells).
+
+Compute rem = num1 - k * num2.
+
+If rem < 0, skip.
+
+If rem >= k and popcount(rem) <= k, then k works.
+
+Return the smallest such k.
+
+If none works → -1.
+
+✅ Full C++ Code
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T; cin >> T;
+    while (T--) {
+        long long num1, num2;
+        cin >> num1 >> num2;
+        int ans = -1;
+
+        for (int k = 1; k <= 60; k++) { // max 60 spells
+            long long rem = num1 - k * num2;
+            if (rem < 0) continue;
+            int bits = __builtin_popcountll(rem);
+            if (bits <= k && rem >= k) {
+                ans = k;
+                break;
+            }
+        }
+
+        cout << ans << "\n";
+    }
+    return 0;
+}
+🧮 Dry Run
+Input:
+
+Code
+num1 = 3, num2 = -2
+Try k=1 → rem = 3 - (-2) = 5 → popcount(5)=2 >1 → fail.
+
+Try k=2 → rem = 3 - 2*(-2) = 7 → popcount(7)=3 >2 → fail.
+
+Try k=3 → rem = 3 - 3*(-2) = 9 → popcount(9)=2 ≤3 and rem≥3 → success.
+Answer = 3 ✅
+
+🎯 Revision Hook
+When revising:
+
+Equation: num1 = sum(2^i) + k*num2.
+
+Check: remainder after subtracting k*num2 must be ≥ k and popcount ≤ k.
+
+Loop k from 1 to 60.
+
+👉 Memory trick:
+“Subtract knum2, remainder must fit in k powers of two.”*
