@@ -1,0 +1,90 @@
+🔑 DSA Pattern / Concept
+Pattern: Monotonic Stack (decreasing stack)
+
+Why?
+
+For each day, you want to know the next hotter day.
+
+That’s a Next Greater Element problem.
+
+A stack helps track indices of days whose warmer day hasn’t been found yet.
+
+As soon as you see a hotter temperature, you pop from the stack and fill the answer.
+
+✅ Algorithm
+Initialize an array ans of size n with all zeros.
+
+Use a stack to store indices of days.
+
+Traverse temperatures from left to right:
+
+While stack not empty and current temperature > temperature at stack top:
+
+Pop index j from stack.
+
+Answer for day j = i - j (distance to warmer day).
+
+Push current index i onto stack.
+
+Remaining indices in stack have no warmer day → answer stays 0.
+
+📌 Full C++ Code
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T; cin >> T;
+    while (T--) {
+        int n; cin >> n;
+        vector<int> temp(n);
+        for (int i = 0; i < n; i++) cin >> temp[i];
+
+        vector<int> ans(n, 0);
+        stack<int> st; // stores indices
+
+        for (int i = 0; i < n; i++) {
+            while (!st.empty() && temp[i] > temp[st.top()]) {
+                int j = st.top(); st.pop();
+                ans[j] = i - j;
+            }
+            st.push(i);
+        }
+
+        for (int i = 0; i < n; i++) cout << ans[i] << " ";
+        cout << "\n";
+    }
+    return 0;
+}
+🧮 Dry Run (Sample Input)
+Code
+temps = [73,74,75,71,69,72,76,73]
+Day 0 (73) → next hotter at day 1 → wait 1.
+
+Day 1 (74) → next hotter at day 2 → wait 1.
+
+Day 2 (75) → next hotter at day 6 → wait 4.
+
+Day 3 (71) → next hotter at day 5 → wait 2.
+
+Day 4 (69) → next hotter at day 5 → wait 1.
+
+Day 5 (72) → next hotter at day 6 → wait 1.
+
+Day 6 (76) → no hotter → 0.
+
+Day 7 (73) → no hotter → 0.
+Output: 1 1 4 2 1 1 0 0 ✅
+
+🎯 Revision Hook
+When revising:
+
+“Daily Temperatures” → Next Greater Element → Monotonic Stack.
+
+Push indices, pop when you find a hotter day, fill distance.
+
+👉 Memory trick:
+“Stack stores waiting days, pop when heat arrives.”
