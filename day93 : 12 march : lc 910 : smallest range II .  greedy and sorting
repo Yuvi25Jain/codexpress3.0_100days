@@ -1,0 +1,67 @@
+🔑 DSA Pattern / Concept
+Pattern: Greedy + Sorting
+Why?
+Each hill height can be adjusted by either +k or -k.
+We want to minimize the difference between the tallest and shortest hills.
+The trick is to sort the array and then consider how shifting the “cut point” changes the min/max.
+
+  ---------------------------------------------------
+🧩 Algorithm
+Sort the array nums.
+Initial difference = nums.back() - nums.front().
+For each index i from 0 to n‑2:
+Imagine splitting the array at i.
+Left side hills (≤ i) are increased by k.
+Right side hills (> i) are decreased by k.
+Compute new min and max:
+high = max(nums[i] + k, nums.back() - k)
+low = min(nums[0] + k, nums[i+1] - k)
+Update answer = min(answer, high - low).
+Return the minimum difference.
+
+--------------------------------------------------------------------------------------
+
+int smallestRangeII(vector<int>& nums, int k) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        int res = nums.back()-nums.front();
+
+        for(int i = 0 ; i<n-1 ; i++){
+            int high = max(nums[i]+k, nums.back()-k);
+            int low = min(nums[0]+k , nums[i+1]-k);
+            res = min(res, high-low);
+        }
+        return res;
+    }
+-------------------------------------------------------------------------------
+
+Dry Run
+Input:
+
+Code
+nums = [1,3,6], k=3
+Sorted: [1,3,6]
+
+Initial diff = 6-1 = 5
+
+i=0 → high=max(1+3,6-3)=max(4,3)=4, low=min(1+3,3-3)=min(4,0)=0 → diff=4
+
+i=1 → high=max(3+3,6-3)=max(6,3)=6, low=min(1+3,6-3)=min(4,3)=3 → diff=3
+
+Answer = 3 ✅
+
+---------------------------------------------------------------------------
+
+🎯 Revision Hook
+When revising:
+
+“Balancing Heights” → Sort + Greedy split → Smallest Range II pattern.
+
+Formula:
+
+high = max(nums[i] + k, nums.back() - k)
+
+low = min(nums[0] + k, nums[i+1] - k)
+
+👉 Memory trick:
+“Sort hills, shift left up and right down, check cut points.”
