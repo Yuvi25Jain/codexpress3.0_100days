@@ -1,0 +1,106 @@
+🔑 DSA Pattern / Concept
+Pattern: Dynamic Programming (Unbounded Knapsack)
+
+Why?
+
+You can use each coin unlimited times.
+
+You want the minimum number of coins to reach exactly X.
+
+This is the unbounded knapsack problem with target sum X.
+
+🧩 Algorithm
+Initialize a DP array dp of size X+1 with large values (e.g., 1e9).
+
+Set dp[0] = 0 (0 coins needed to make sum 0).
+
+For each amount i from 1 to X:
+
+For each coin c:
+
+If i - c >= 0, update:
+
+𝑑
+𝑝
+[
+𝑖
+]
+=
+min
+⁡
+(
+𝑑
+𝑝
+[
+𝑖
+]
+,
+𝑑
+𝑝
+[
+𝑖
+−
+𝑐
+]
++
+1
+)
+At the end, if dp[X] is still large, return -1. Otherwise, return dp[X].
+
+✅ Full C++ Code
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T; cin >> T;
+    while (T--) {
+        int N, X; cin >> N >> X;
+        vector<int> coins(N);
+        for (int i = 0; i < N; i++) cin >> coins[i];
+
+        const int INF = 1e9;
+        vector<int> dp(X+1, INF);
+        dp[0] = 0;
+
+        for (int i = 1; i <= X; i++) {
+            for (int c : coins) {
+                if (i - c >= 0) {
+                    dp[i] = min(dp[i], dp[i-c] + 1);
+                }
+            }
+        }
+
+        cout << (dp[X] == INF ? -1 : dp[X]) << "\n";
+    }
+    return 0;
+}
+🧮 Dry Run
+Input:
+
+Code
+N=3, X=11
+coins = [1,5,6]
+dp[0]=0
+
+dp[5]=1 (using coin 5)
+
+dp[6]=1 (using coin 6)
+
+dp[11]=2 (using 5+6)
+Answer = 2 ✅
+
+🎯 Revision Hook
+When revising:
+
+“Minimum coins to target” → DP with unbounded knapsack.
+
+Formula: dp[i] = min(dp[i], dp[i-c] + 1)
+
+If unreachable → -1.
+
+👉 Memory trick:
+“Build dp from 0 to X, each coin extends reachable sums.”
