@@ -1,0 +1,104 @@
+🔑 DSA Pattern / Concept
+Pattern: Greedy + Sorting + Disjoint Set / Slot Allocation
+
+Why?
+
+Each task takes 1 unit of time.
+
+You want to maximize profit while respecting deadlines.
+
+The greedy strategy is:
+
+Sort tasks by profit (descending).
+
+For each task, try to schedule it in the latest available slot ≤ its deadline.
+
+If slot is free, assign it; otherwise skip.
+
+This ensures maximum profit and also maximizes number of tasks.
+
+✅ Algorithm
+Sort tasks by profit in descending order.
+
+Maintain an array slots of size N (max deadline).
+
+For each task:
+
+Find the latest free slot ≤ deadline.
+
+If found, schedule task there, add profit, increment count.
+
+Output total profit and number of tasks.
+
+📌 Full C++ Code
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Task {
+    int deadline, profit;
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T; cin >> T;
+    while (T--) {
+        int N; cin >> N;
+        vector<Task> tasks(N);
+        for (int i = 0; i < N; i++) {
+            cin >> tasks[i].deadline >> tasks[i].profit;
+        }
+
+        // Sort by profit descending
+        sort(tasks.begin(), tasks.end(), [](Task &a, Task &b) {
+            return a.profit > b.profit;
+        });
+
+        int maxDeadline = 0;
+        for (auto &t : tasks) maxDeadline = max(maxDeadline, t.deadline);
+
+        vector<int> slot(maxDeadline+1, -1);
+        int count = 0, totalProfit = 0;
+
+        for (auto &t : tasks) {
+            for (int d = t.deadline; d > 0; d--) {
+                if (slot[d] == -1) {
+                    slot[d] = t.profit;
+                    totalProfit += t.profit;
+                    count++;
+                    break;
+                }
+            }
+        }
+
+        cout << totalProfit << " " << count << "\n";
+    }
+    return 0;
+}
+🧮 Dry Run (Sample Input)
+Code
+N=4
+Tasks: (2,100), (1,19), (2,27), (1,25)
+Sort by profit → (2,100), (2,27), (1,25), (1,19).
+
+Task (2,100) → slot 2 free → schedule.
+
+Task (2,27) → slot 2 taken → slot 1 free → schedule.
+
+Task (1,25) → slot 1 taken → skip.
+
+Task (1,19) → slot 1 taken → skip.
+
+Profit = 127, Tasks = 2 ✅
+
+🎯 Revision Hook
+When revising:
+
+“Job Sequencing” → Sort by profit → Greedy slot allocation.”
+
+Always try to place task in the latest free slot ≤ deadline.
+
+👉 Memory trick:
+“Biggest profit first, push it as late as possible.”
