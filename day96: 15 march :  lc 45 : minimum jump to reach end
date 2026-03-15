@@ -1,0 +1,93 @@
+🔑 DSA Pattern / Concept
+Pattern: Greedy Range Expansion (a.k.a. BFS on array levels)
+
+Why?
+
+At each index, you can jump up to nums[i] steps.
+
+You want the minimum jumps → think of it as levels in BFS.
+
+Greedy strategy:
+
+Track the current range you can reach with the current jump.
+
+Expand to the farthest range possible.
+
+When you exhaust the current range, increment jump count.
+
+If you ever can’t move forward, return -1.
+
+✅ Algorithm
+Initialize jumps=0, currentEnd=0, farthest=0.
+
+Traverse array from i=0 to n-2:
+
+Update farthest = max(farthest, i + nums[i]).
+
+If i == currentEnd:
+
+Increment jumps.
+
+Update currentEnd = farthest.
+
+If currentEnd < i, return -1 (stuck).
+
+At the end, if currentEnd >= n-1, return jumps. Otherwise, -1.
+
+📌 Full C++ Code
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T; cin >> T;
+    while (T--) {
+        int n; cin >> n;
+        vector<int> nums(n);
+        for (int i = 0; i < n; i++) cin >> nums[i];
+
+        int jumps = 0, currentEnd = 0, farthest = 0;
+        bool possible = true;
+
+        for (int i = 0; i < n - 1; i++) {
+            farthest = max(farthest, i + nums[i]);
+            if (i == currentEnd) {
+                jumps++;
+                currentEnd = farthest;
+                if (currentEnd <= i) { // stuck
+                    possible = false;
+                    break;
+                }
+            }
+        }
+
+        if (!possible || currentEnd < n - 1) cout << -1 << "\n";
+        else cout << jumps << "\n";
+    }
+    return 0;
+}
+🧮 Dry Run (Sample Input)
+Code
+nums = [2,3,1,1,4]
+i=0 → farthest=2 → currentEnd=0 → jumps=1 → currentEnd=2.
+
+i=1 → farthest=4 → currentEnd=2 → jumps=2 → currentEnd=4.
+
+End reached → answer=2 ✅
+
+🎯 Revision Hook
+When revising:
+
+“Minimum jumps” → Greedy range expansion.
+
+Track farthest and currentEnd.
+
+Increment jumps when you finish a range.
+
+If stuck → return -1.
+
+👉 Memory trick:
+“Expand range, count jumps, stop if stuck.”
