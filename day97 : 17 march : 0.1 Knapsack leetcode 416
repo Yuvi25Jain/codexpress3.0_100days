@@ -1,0 +1,110 @@
+🔑 DSA Pattern / Concept
+Pattern: Dynamic Programming (bounded knapsack, each item can be chosen once).
+
+Why?
+
+Each item has a weight and value.
+
+You want to maximize value without exceeding capacity.
+
+You must decide for each item: include it or exclude it.
+
+This is the 0/1 Knapsack problem.
+
+✅ Algorithm (DP Table)
+Create a DP array dp[W+1] initialized to 0.
+
+For each item (value, weight):
+
+Traverse capacity w from W down to weight:
+
+Update:
+
+𝑑
+𝑝
+[
+𝑤
+]
+=
+max
+⁡
+(
+𝑑
+𝑝
+[
+𝑤
+]
+,
+𝑑
+𝑝
+[
+𝑤
+−
+𝑤
+𝑒
+𝑖
+𝑔
+ℎ
+𝑡
+]
++
+𝑣
+𝑎
+𝑙
+𝑢
+𝑒
+)
+Going backwards ensures each item is used at most once.
+
+Answer = dp[W].
+
+📌 Full C++ Code
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T; cin >> T;
+    while (T--) {
+        int N, W; cin >> N >> W;
+        vector<int> value(N), weight(N);
+        for (int i = 0; i < N; i++) {
+            cin >> value[i] >> weight[i];
+        }
+
+        vector<int> dp(W+1, 0);
+
+        for (int i = 0; i < N; i++) {
+            for (int w = W; w >= weight[i]; w--) {
+                dp[w] = max(dp[w], dp[w - weight[i]] + value[i]);
+            }
+        }
+
+        cout << dp[W] << "\n";
+    }
+    return 0;
+}
+🧮 Dry Run (Sample Input)
+Code
+N=3, W=50
+Items: (60,10), (100,20), (120,30)
+dp[50] = max value achievable.
+
+Pick items 2 and 3 → weight=20+30=50, value=220.
+
+Answer = 220 ✅
+
+🎯 Revision Hook
+When revising:
+
+“0/1 Knapsack” → DP with backward loop.
+
+Formula: dp[w] = max(dp[w], dp[w - weight] + value).
+
+Backward loop ensures item used once.
+
+👉 Memory trick:
+“Knapsack: include or exclude, DP builds max value.”
