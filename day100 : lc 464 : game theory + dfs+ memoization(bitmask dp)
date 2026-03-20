@@ -1,0 +1,168 @@
+🔑 DSA Pattern / Concept
+Pattern: Game Theory + DFS + Memoization (bitmask DP)
+
+Why?
+
+Two players alternately pick numbers from 1..maxCoinBag.
+
+Once picked, a number cannot be reused.
+
+The first player wants to know if they can force a win.
+
+This is a perfect information game → solved by recursive search with memoization.
+
+🧩 Key Observations
+If targetTreasure == 0, first player wins immediately.
+
+If the sum of all coin bags < targetTreasure, no one can win → return "no".
+
+Otherwise, simulate moves:
+
+Represent chosen bags with a bitmask (used).
+
+At each step, try picking a bag i.
+
+If i >= remaining target, current player wins.
+
+Else, if the opponent cannot win from the new state, current player wins.
+
+🔑 Edge Cases to Cover
+Target = 0 → First adventurer wins immediately (yes).
+
+Target ≤ maxCoinBag → First adventurer can pick that bag and win (yes).
+
+Sum of all bags < target → Impossible for anyone to win (no).
+
+General case → Use DFS + memoization with bitmask to simulate optimal play.
+
+✅ One‑Shot Fixed Code (Handles All Edge Cases)
+cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+unordered_map<int,bool> memo;
+
+bool canWin(int maxCoinBag, int target, int usedMask) {
+    if (memo.count(usedMask)) return memo[usedMask];
+
+    for (int i = 1; i <= maxCoinBag; i++) {
+        int bit = 1 << (i-1);
+        if (usedMask & bit) continue; // already taken
+
+        if (i >= target) return memo[usedMask] = true;
+
+        // If opponent cannot win after I take i
+        if (!canWin(maxCoinBag, target - i, usedMask | bit)) {
+            return memo[usedMask] = true;
+        }
+    }
+    return memo[usedMask] = false;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T; cin >> T;
+    while (T--) {
+        int maxCoinBag, targetTreasure;
+        cin >> maxCoinBag >> targetTreasure;
+
+        // Edge case 1: target = 0
+        if (targetTreasure == 0) {
+            cout << "yes\n";
+            continue;
+        }
+
+        // Edge case 2: target <= maxCoinBag
+        if (targetTreasure <= maxCoinBag) {
+            cout << "yes\n";
+            continue;
+        }
+
+        // Edge case 3: sum of all bags < target
+        int sum = maxCoinBag * (maxCoinBag + 1) / 2;
+        if (sum < targetTreasure) {
+            cout << "no\n";
+            continue;
+        }
+
+        // General case: DFS + memoization
+        memo.clear();
+        cout << (canWin(maxCoinBag, targetTreasure, 0) ? "yes\n" : "no\n");
+    }
+    return 0;
+}
+🧮 Dry Run
+Input: 10 11 → sum=55 ≥ 11, but DFS shows second player can always respond → "no".
+
+Input: 10 0 → target=0 → "yes".
+
+Input: 10 1 → target ≤ maxCoinBag → "yes".
+
+Input: 20 300 → sum=210 < 300 → "no".
+
+🎯 Why This Fix Works
+Covers all edge cases explicitly before DFS.
+
+Uses memoized DFS with bitmask for general case.
+
+Efficient: maxCoinBag ≤ 20 → at most 2^20 states, manageable with memoization.
+
+Memoize results to avoid recomputation
+
+✅ LC‑Style C++ Code
+cpp
+class Solution {
+public:
+    unordered_map<int,bool> memo;
+
+    bool dfs(int maxChoosableInteger, int desiredTotal, int usedMask) {
+        if (memo.count(usedMask)) return memo[usedMask];
+
+        for (int i = 1; i <= maxChoosableInteger; i++) {
+            int bit = 1 << (i-1);
+            if (usedMask & bit) continue; // already taken
+
+            if (i >= desiredTotal) return memo[usedMask] = true;
+
+            // If opponent cannot win after I take i
+            if (!dfs(maxChoosableInteger, desiredTotal - i, usedMask | bit)) {
+                return memo[usedMask] = true;
+            }
+        }
+        return memo[usedMask] = false;
+    }
+
+    bool canIWin(int maxChoosableInteger, int desiredTotal) {
+        // Edge case 1: target = 0
+        if (desiredTotal == 0) return true;
+
+        // Edge case 2: target <= maxChoosableInteger
+        if (desiredTotal <= maxChoosableInteger) return true;
+
+        // Edge case 3: sum of all numbers < target
+        int sum = maxChoosableInteger * (maxChoosableInteger + 1) / 2;
+        if (sum < desiredTotal) return false;
+
+        memo.clear();
+        return dfs(maxChoosableInteger, desiredTotal, 0);
+    }
+};
+🔑 Why This Works
+Immediate win checks:
+
+desiredTotal == 0 → first player wins.
+
+desiredTotal <= maxChoosableInteger → first player can pick that number.
+
+Impossible case: If sum of all numbers < target → no one can win.
+
+General case: DFS + memoization with bitmask simulates optimal play.
+
+Efficient: maxChoosableInteger ≤ 20 → at most 2^20 states, manageable.
+
+🧮 Example
+Input: maxChoosableInteger=10, desiredTotal=11 → returns false (no).
+
+Input: maxChoosableInteger=10, desiredTotal=1 → returns true (yes).
